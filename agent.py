@@ -22,9 +22,11 @@ class HumanAgent(BaseAgent):
         waiting_for_click = True
         while waiting_for_click:
             for event in pygame.event.get():
+                # Quit game
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     raise SystemExit
+                # Change board
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
                     row, col = my // CELL_SIZE, mx // CELL_SIZE
@@ -37,6 +39,7 @@ class HumanAgent(BaseAgent):
 
 ## MCTS Node Class
 class MCTSNode:
+    # TODO: add action parameter?
     def __init__(self, state, parent=None):
         self.state = state
         self.parent = parent
@@ -60,6 +63,7 @@ class MCTSNode:
     # TODO check
     def check_winner(self):
         """Find winner (1 or 2) or None."""
+        # ?
         for i in range(3):
             if self.state[i][0] == self.state[i][1] == self.state[i][2] != 0:
                 return self.state[i][0]
@@ -80,6 +84,7 @@ def expand(self):
         new_state = [row[:] for row in self.state]
         player = self.get_current_player()
         new_state[action[0]][action[1]] = player
+        # TODO: action isn't a parameter for a class initialization?
         child = MCTSNode(new_state, parent=self, action=action)
         self.children.append(child)
         return child
@@ -112,6 +117,7 @@ def rollout(self):
         state[move[0]][move[1]] = player
         player = 1 if player == 2 else 2
 
+# TODO: Do we need two methods for this or can we reuse the above method?
 def check_winner_for_state(self, state):
     """Same winner check for rollout."""
     return MCTSNode(state).check_winner()
@@ -145,6 +151,7 @@ def mcts_search(root_state, iterations=500):
         # Backpropagation
         node.backpropagate(result)
 
+    # TODO: change to node.best_child?
     return root.best_child(c=0).action  # Return best move
 
 ## Backpropagation
