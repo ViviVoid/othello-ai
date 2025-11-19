@@ -164,12 +164,22 @@ class RandomMCTSAgent(BaseAgent):
         # TODO: Replace with full Monte Carlo Tree Search
         return random.choice(valid_moves)
 
-class RandomMinimaxAgent(BaseAgent):
+class MinimaxAgent(BaseAgent):
     """Placeholder for Minimax logic — currently plays randomly."""
     # TODO: Implement Minimax algorithm
+    def __init__(self, player, abpruning=False, depth=1):
+        super().__init__(player)
+        self.abpruning = abpruning
+        self.depth = depth
     def get_move(self, board, valid_moves):
         if not valid_moves:
             return None
         # TODO: Replace with actual Minimax search
         return random.choice(valid_moves)
 
+class RandomAgent(BaseAgent):
+    """Plays randomly."""
+    def get_move(self, board, valid_moves):
+        if not valid_moves:
+            return None
+        return random.choice(valid_moves)
