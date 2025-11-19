@@ -2,6 +2,8 @@
 # Othello Pygame
 
 import pygame
+import argparse
+import json
 import sys
 import numpy as np
 from agent import HumanAgent, RandomMCTSAgent, RandomMinimaxAgent
@@ -111,6 +113,26 @@ def draw_board(board, valid_moves):
 
 # --- Main Game Loop ---
 def main():
+    parser = argparse.ArgumentParser(description="Othello Game")
+    parser.add_argument(
+        "-f", "--filename",
+        default="example-minimax.json",
+        help="Game environment file"
+    )
+    parser.add_argument(
+        "-o", "--outputfile",
+        default="",
+        help="Output file report"
+    )
+    args = parser.parse_args()
+    environment_data = []
+    with open(args.filename, "r") as file:
+        environment_data = json.load(file) # Load environment data
+    
+    if (args.outputfile != ""):
+        with open(args.outputfile, "w") as file:
+            # file.write("Hello World")
+            print("Writing to output file...")
     board = create_board()
     player = -1  # Black starts
     running = True
