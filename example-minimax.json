@@ -1,0 +1,8 @@
+{
+  "agents": [
+    ["minimax", true, 1],
+    ["human"]
+  ],
+  "display": true,
+  "num_games": 1
+}
