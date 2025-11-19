@@ -22,9 +22,11 @@ class HumanAgent(BaseAgent):
         waiting_for_click = True
         while waiting_for_click:
             for event in pygame.event.get():
+                # Quit game
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     raise SystemExit
+                # Change board
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
                     row, col = my // CELL_SIZE, mx // CELL_SIZE
@@ -37,6 +39,7 @@ class HumanAgent(BaseAgent):
 
 ## MCTS Node Class
 class MCTSNode:
+    # TODO: add action parameter
     def __init__(self, state, parent=None):
         self.state = state
         self.parent = parent
@@ -57,7 +60,7 @@ class MCTSNode:
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
 
-    # TODO check
+    # TODO change to othello
     def check_winner(self):
         """Find winner (1 or 2) or None."""
         for i in range(3):
@@ -71,60 +74,62 @@ class MCTSNode:
             return self.state[0][2]
         return None
 
-## Selection
+    ## Selection
 
-### TODO Check later
-def expand(self):
-        """Add one of the remaining actions as a child."""
-        action = self.untried_actions.pop()
-        new_state = [row[:] for row in self.state]
+    ### TODO Check later
+    def expand(self):
+            """Add one of the remaining actions as a child."""
+            action = self.untried_actions.pop()
+            new_state = [row[:] for row in self.state]
+            player = self.get_current_player()
+            new_state[action[0]][action[1]] = player
+            # TODO: action isn't a parameter for a class initialization
+            child = MCTSNode(new_state, parent=self, action=action)
+            self.children.append(child)
+            return child
+
+    def get_current_player(self):
+        """Find whose turn it is."""
+        x_count = sum(row.count(1) for row in self.state)
+        o_count = sum(row.count(2) for row in self.state)
+        return 1 if x_count == o_count else 2
+
+    def best_child(self, c=1.4):
+        """Select child with best UCB1 score."""
+        return max(self.children, key=lambda child:
+                    (child.wins / child.visits) +
+                    c * math.sqrt(math.log(self.visits) / child.visits))
+
+    def rollout(self):
+        """Play random moves until the game ends."""
+        state = [row[:] for row in self.state]
         player = self.get_current_player()
-        new_state[action[0]][action[1]] = player
-        child = MCTSNode(new_state, parent=self, action=action)
-        self.children.append(child)
-        return child
 
-def get_current_player(self):
-    """Find whose turn it is."""
-    x_count = sum(row.count(1) for row in self.state)
-    o_count = sum(row.count(2) for row in self.state)
-    return 1 if x_count == o_count else 2
+        while True:
+            winner = self.check_winner_for_state(state)
+            if winner: return 1 if winner == 1 else 0
 
-def best_child(self, c=1.4):
-    """Select child with best UCB1 score."""
-    return max(self.children, key=lambda child:
-                (child.wins / child.visits) +
-                c * math.sqrt(math.log(self.visits) / child.visits))
+            actions = [(i, j) for i in range(3) for j in range(3) if state[i][j] == 0]
+            if not actions: return 0.5  # Draw
 
-def rollout(self):
-    """Play random moves until the game ends."""
-    state = [row[:] for row in self.state]
-    player = self.get_current_player()
+            move = random.choice(actions)
+            state[move[0]][move[1]] = player
+            player = 1 if player == 2 else 2
 
-    while True:
-        winner = self.check_winner_for_state(state)
-        if winner: return 1 if winner == 1 else 0
+    # TODO: Look into this to see if it's needed
+    # def check_winner_for_state(self, state):
+    #     """Same winner check for rollout."""
+    #     return MCTSNode(state).check_winner()
 
-        actions = [(i, j) for i in range(3) for j in range(3) if state[i][j] == 0]
-        if not actions: return 0.5  # Draw
+    def backpropagate(self, result):
+        """Update stats up the tree."""
+        self.visits += 1
+        self.wins += result
+        if self.parent:
+            self.parent.backpropagate(result)
 
-        move = random.choice(actions)
-        state[move[0]][move[1]] = player
-        player = 1 if player == 2 else 2
-
-def check_winner_for_state(self, state):
-    """Same winner check for rollout."""
-    return MCTSNode(state).check_winner()
-
-def backpropagate(self, result):
-    """Update stats up the tree."""
-    self.visits += 1
-    self.wins += result
-    if self.parent:
-        self.parent.backpropagate(result)
-
-## Search
-### TODO
+    ## Search
+    ### TODO
 def mcts_search(root_state, iterations=500):
     root = MCTSNode(root_state)
 
@@ -144,6 +149,7 @@ def mcts_search(root_state, iterations=500):
 
         # Backpropagation
         node.backpropagate(result)
+
 
     return root.best_child(c=0).action  # Return best move
 
