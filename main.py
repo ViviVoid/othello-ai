@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 import numpy as np
-from agent import HumanAgent, RandomMCTSAgent, RandomMinimaxAgent
+from agent import HumanAgent, RandomMCTSAgent, MinimaxAgent, RandomAgent
 
 # --- Game constants ---
 BOARD_SIZE = 8
@@ -110,6 +110,22 @@ def draw_board(board, valid_moves):
                                    (col * CELL_SIZE + CELL_SIZE // 2,
                                     row * CELL_SIZE + CELL_SIZE // 2), 30)
 
+def create_agent(agent_details, first):
+    agent_type = agent_details[0]
+    match agent_type:
+        case "human":
+            return HumanAgent(first)
+        case "minimax":
+            use_alpha_beta = agent_details[1] if len(agent_details) > 1 else True
+            depth = agent_details[2] if len(agent_details) > 2 else 3
+            return MinimaxAgent(first, use_alpha_beta, depth)
+        case "mcts":
+            return RandomMCTSAgent(first)
+        case "random":
+            return RandomAgent(first)
+        case _:
+            raise ValueError(f"Unknown agent type: {agent_type}")
+
 
 # --- Main Game Loop ---
 def main():
@@ -128,6 +144,7 @@ def main():
     environment_data = []
     with open(args.filename, "r") as file:
         environment_data = json.load(file) # Load environment data
+        print(environment_data["agents"])
     
     if (args.outputfile != ""):
         with open(args.outputfile, "w") as file:
@@ -137,11 +154,12 @@ def main():
     player = -1  # Black starts
     running = True
 
-    # --- Choose agents here ---
+    # --- Load environment variables ---
     # Examples:
+    black_agent = create_agent(environment_data["agents"][0], -1)
+    white_agent = create_agent(environment_data["agents"][1], 1)
     black_agent = HumanAgent(-1)
     white_agent = RandomMCTSAgent(1)
-    # white_agent = RandomMinimaxAgent(1)
 
     while running:
         valid_moves = get_valid_moves(board, player)
