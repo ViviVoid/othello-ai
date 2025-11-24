@@ -4,8 +4,32 @@
 import random
 import pygame
 import math
+import numpy as np
+import sys
+import os
 
 CELL_SIZE = 80
+BOARD_SIZE = 8  # Default, will be overridden by import if available
+
+# Import game logic from main.py (circular import handled by Python)
+try:
+    from main import (
+        get_valid_moves, apply_move, count_discs, 
+        get_mobility, count_stable_discs, BOARD_SIZE
+    )
+except ImportError:
+    # If import fails (e.g., during testing), define stubs
+    # These should never be used in normal operation
+    def get_valid_moves(board, player):
+        raise NotImplementedError("Game logic not imported")
+    def apply_move(board, move, player):
+        raise NotImplementedError("Game logic not imported")
+    def count_discs(board):
+        raise NotImplementedError("Game logic not imported")
+    def get_mobility(board, player):
+        raise NotImplementedError("Game logic not imported")
+    def count_stable_discs(board, player):
+        raise NotImplementedError("Game logic not imported")
 
 
 class BaseAgent:
@@ -19,6 +43,17 @@ class BaseAgent:
 class HumanAgent(BaseAgent):
     """Handles user mouse input for move selection."""
     def get_move(self, board, valid_moves):
+        # In headless mode, human agent cannot work - return None or random move
+        try:
+            import pygame
+            # Check if pygame is initialized and display is available
+            if not pygame.get_init():
+                # Headless mode - return None (will skip turn)
+                return None
+        except:
+            # Pygame not available - headless mode
+            return None
+        
         waiting_for_click = True
         while waiting_for_click:
             for event in pygame.event.get():

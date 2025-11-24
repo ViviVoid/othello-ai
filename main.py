@@ -18,10 +18,21 @@ WHITE = (255, 255, 255)
 GRAY = (160, 160, 160)
 HIGHLIGHT = (200, 200, 0)
 
-pygame.init()
-screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE + 50))
-pygame.display.set_caption("Othello (Reversi)")
-font = pygame.font.SysFont(None, 36)
+# Initialize pygame only if needed (for headless mode)
+screen = None
+font = None
+pygame_initialized = False
+
+
+def init_pygame():
+    """Initialize pygame for display mode."""
+    global screen, font, pygame_initialized
+    if not pygame_initialized:
+        pygame.init()
+        screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE + 50))
+        pygame.display.set_caption("Othello (Reversi)")
+        font = pygame.font.SysFont(None, 36)
+        pygame_initialized = True
 
 
 # --- Core Game Logic ---
@@ -89,7 +100,85 @@ def count_discs(board):
     return whites, blacks
 
 
-def draw_board(board, valid_moves):
+# --- Board State Heuristics ---
+def get_mobility(board, player):
+    """Calculate mobility: number of valid moves available to the player."""
+    return len(get_valid_moves(board, player))
+
+
+def count_stable_discs(board, player):
+    """
+    Calculate stable discs for a player.
+    A disc is stable if it cannot be flipped by any legal sequence of moves.
+    This is a simplified version that checks corner stability and edge stability.
+    """
+    stable_count = 0
+    corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
+    
+    # Check corner stability
+    for r, c in corners:
+        if board[r][c] == player:
+            stable_count += 1
+    
+    # Check edge stability (simplified: discs adjacent to stable corners)
+    # A more complete implementation would check all possible flip paths
+    for r in range(BOARD_SIZE):
+        for c in range(BOARD_SIZE):
+            if board[r][c] == player:
+                # Check if disc is on an edge and adjacent to a stable corner
+                if (r == 0 or r == 7 or c == 0 or c == 7):
+                    # Check if adjacent to a stable corner
+                    is_stable = False
+                    for cr, cc in corners:
+                        if board[cr][cc] == player:
+                            if (r == cr and abs(c - cc) <= 1) or (c == cc and abs(r - cr) <= 1):
+                                is_stable = True
+                                break
+                    if is_stable:
+                        stable_count += 1
+    
+    return stable_count
+
+
+def evaluate_board_state(board, player):
+    """
+    Comprehensive board state evaluation heuristic.
+    Returns a dictionary with various metrics.
+    """
+    whites, blacks = count_discs(board)
+    white_mobility = get_mobility(board, 1)
+    black_mobility = get_mobility(board, -1)
+    white_stable = count_stable_discs(board, 1)
+    black_stable = count_stable_discs(board, -1)
+    
+    # Calculate disc difference
+    if player == 1:  # White
+        disc_diff = whites - blacks
+        mobility_diff = white_mobility - black_mobility
+        stable_diff = white_stable - black_stable
+    else:  # Black
+        disc_diff = blacks - whites
+        mobility_diff = black_mobility - white_mobility
+        stable_diff = black_stable - white_stable
+    
+    return {
+        'disc_count_player': whites if player == 1 else blacks,
+        'disc_count_opponent': blacks if player == 1 else whites,
+        'disc_difference': disc_diff,
+        'mobility_player': white_mobility if player == 1 else black_mobility,
+        'mobility_opponent': black_mobility if player == 1 else white_mobility,
+        'mobility_difference': mobility_diff,
+        'stable_discs_player': white_stable if player == 1 else black_stable,
+        'stable_discs_opponent': black_stable if player == 1 else white_stable,
+        'stable_discs_difference': stable_diff,
+        'total_discs': whites + blacks
+    }
+
+
+def draw_board(board, valid_moves, display=True):
+    """Draw the board. Only draws if display is True and pygame is initialized."""
+    if not display or not pygame_initialized:
+        return
     screen.fill(GREEN)
     for row in range(BOARD_SIZE):
         for col in range(BOARD_SIZE):
@@ -128,6 +217,101 @@ def create_agent(agent_details, first):
 
 
 # --- Main Game Loop ---
+def run_game(environment_data, display=True, output_file=""):
+    """
+    Run a single game of Othello.
+    
+    Args:
+        environment_data: Dictionary with agent configurations
+        display: Whether to show pygame display
+        output_file: Optional file path to write game results
+    
+    Returns:
+        Dictionary with game results
+    """
+    global screen, font
+    
+    if display:
+        init_pygame()
+    
+    # Load agents from environment data
+    black_agent = create_agent(environment_data["agents"][0], -1)
+    white_agent = create_agent(environment_data["agents"][1], 1)
+    
+    board = create_board()
+    player = -1  # Black starts
+    running = True
+    move_count = 0
+    game_log = []
+    
+    while running:
+        valid_moves = get_valid_moves(board, player)
+        
+        if display:
+            draw_board(board, valid_moves, display=True)
+            whites, blacks = count_discs(board)
+            status_text = f"Turn: {'Black' if player == -1 else 'White'} | W:{whites} B:{blacks}"
+            text_surface = font.render(status_text, True, BLACK, GRAY)
+            screen.blit(text_surface, (10, WINDOW_SIZE + 10))
+            pygame.display.flip()
+
+        # --- Check endgame ---
+        if not valid_moves:
+            opponent_moves = get_valid_moves(board, -player)
+            if not opponent_moves:
+                # Game over
+                whites, blacks = count_discs(board)
+                winner = "White" if whites > blacks else "Black" if blacks > whites else "Draw"
+                winner_player = 1 if whites > blacks else -1 if blacks > whites else 0
+                
+                if display:
+                    print(f"Game Over! Winner: {winner}")
+                    pygame.time.wait(2000)
+                
+                # Record final game state
+                result = {
+                    'winner': winner,
+                    'winner_player': winner_player,
+                    'white_score': int(whites),
+                    'black_score': int(blacks),
+                    'total_moves': move_count,
+                    'final_board': board.tolist()
+                }
+                
+                if output_file:
+                    with open(output_file, "w") as f:
+                        json.dump(result, f, indent=2)
+                
+                running = False
+                return result
+            else:
+                # Skip turn
+                player *= -1
+                continue
+
+        # --- Agent move selection ---
+        if player == -1:
+            move = black_agent.get_move(board, valid_moves)
+        else:
+            move = white_agent.get_move(board, valid_moves)
+
+        if move:
+            board = apply_move(board, move, player)
+            move_count += 1
+            player *= -1
+
+        if display:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+    
+    if display:
+        pygame.quit()
+    
+    return None
+
+
 def main():
     parser = argparse.ArgumentParser(description="Othello Game")
     parser.add_argument(
@@ -140,64 +324,18 @@ def main():
         default="",
         help="Output file report"
     )
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help="Run in headless mode (no display)"
+    )
     args = parser.parse_args()
-    environment_data = []
-    with open(args.filename, "r") as file:
-        environment_data = json.load(file) # Load environment data
-        print(environment_data["agents"])
     
-    if (args.outputfile != ""):
-        with open(args.outputfile, "w") as file:
-            # file.write("Hello World")
-            print("Writing to output file...")
-    board = create_board()
-    player = -1  # Black starts
-    running = True
-
-    # --- Load environment variables ---
-    # Examples:
-    black_agent = create_agent(environment_data["agents"][0], -1)
-    white_agent = create_agent(environment_data["agents"][1], 1)
-    black_agent = HumanAgent(-1)
-    white_agent = RandomMCTSAgent(1)
-
-    while running:
-        valid_moves = get_valid_moves(board, player)
-        draw_board(board, valid_moves)
-        whites, blacks = count_discs(board)
-        status_text = f"Turn: {'Black' if player == -1 else 'White'} | W:{whites} B:{blacks}"
-        text_surface = font.render(status_text, True, BLACK, GRAY)
-        screen.blit(text_surface, (10, WINDOW_SIZE + 10))
-        pygame.display.flip()
-
-        # --- Check endgame ---
-        if not valid_moves:
-            if not get_valid_moves(board, -player):
-                winner = "White" if whites > blacks else "Black" if blacks > whites else "Draw"
-                print(f"Game Over! Winner: {winner}")
-                pygame.time.wait(2000)
-                running = False
-                continue
-            else:
-                player *= -1
-                continue
-
-        # --- Agent move selection ---
-        if player == -1:
-            move = black_agent.get_move(board, valid_moves)
-        else:
-            move = white_agent.get_move(board, valid_moves)
-
-        if move:
-            board = apply_move(board, move, player)
-            player *= -1
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-    pygame.quit()
+    with open(args.filename, "r") as file:
+        environment_data = json.load(file)
+    
+    display = not args.headless
+    run_game(environment_data, display=display, output_file=args.outputfile)
 
 
 if __name__ == "__main__":
