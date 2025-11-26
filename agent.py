@@ -54,6 +54,7 @@ class MCTSNode:
         self.untried_actions = self.get_actions()
 
     # Possible board directions
+    # TODO: move variable somewhere else?
     DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
     def on_board(self, r, c):
@@ -79,7 +80,6 @@ class MCTSNode:
                 move_is_valid = False
 
                 # for each row and col in a direction (r, c), check if placing a piece would flip opponent
-                # TODO: Make DIRECTIONS class object?
                 for dr, dc in DIRECTIONS:
                     # Step in 1 direction (immediate neighbor)
                     rr, cc = r + dr, c + dc
@@ -230,10 +230,6 @@ def is_terminal(self):
             # Switch players
             player = 1 if player == 2 else 2
 
-    # TODO: Shouldn't be needed
-    # def check_winner_for_state(self, state):
-    #     """Same winner check for rollout."""
-    #     return MCTSNode(state).check_winner()
 
     def backpropagate(self, result):
         """Update stats up the tree."""
@@ -265,7 +261,7 @@ def mcts_search(root_state, iterations=500):
         node.backpropagate(result)
 
 
-    return root.best_child(c=0).action  # Return best move
+    return best_child(root, c=0).action  # Return best move
 
 
 class RandomMCTSAgent(BaseAgent):
