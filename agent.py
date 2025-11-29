@@ -52,10 +52,9 @@ class MCTSNode:
         self.action = action
         self.player = player
         self.untried_actions = self.get_actions()
+        # All possible directions
+        self.DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
-    # Possible board directions
-    # TODO: move variable somewhere else?
-    DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
 
     def on_board(self, r, c):
         """Ensures players stay on board"""
@@ -80,7 +79,7 @@ class MCTSNode:
                 move_is_valid = False
 
                 # for each row and col in a direction (r, c), check if placing a piece would flip opponent
-                for dr, dc in DIRECTIONS:
+                for dr, dc in self.DIRECTIONS:
                     # Step in 1 direction (immediate neighbor)
                     rr, cc = r + dr, c + dc
 
@@ -102,10 +101,10 @@ class MCTSNode:
         return valid_moves
 
 
-def is_terminal(self):
+    def is_terminal(self):
         # TODO Placeholder for terminal state check
         return self.game_over()
-    
+
     # TODO Check (DONE)
     def is_fully_expanded(self):
         return len(self.untried_actions) == 0
@@ -141,7 +140,7 @@ def is_terminal(self):
         new_board[r][c] = self.player
 
         # For each direction, check for flippable discs
-        for dr, dc in DIRECTIONS:
+        for dr, dc in self.DIRECTIONS:
             rr, cc = r + dr, c + dc
             path = []
 
@@ -181,6 +180,7 @@ def is_terminal(self):
         # Selects one move to make
         move = self.untried_actions.pop()
         # Complete said move
+        # TODO: Fix error
         new_state = apply_action(self.state, self.player, move)
         # Change players
         next_player = 2 if self.player == 1 else 1
@@ -260,8 +260,9 @@ def mcts_search(root_state, iterations=500):
         # Backpropagation
         node.backpropagate(result)
 
-
-    return best_child(root, c=0).action  # Return best move
+    # Return best move
+    # TODO: Fix
+    return best_child(root, c=0).action
 
 
 class RandomMCTSAgent(BaseAgent):
