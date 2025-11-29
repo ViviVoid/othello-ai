@@ -180,7 +180,7 @@ class MCTSNode:
         # Selects one move to make
         move = self.untried_actions.pop()
         # Complete said move
-        # original: new_state = apply_action(self.state, self.player, move)
+        # original line: new_state = apply_action(self.state, self.player, move)
         new_state = self.state.apply_action(self.player, move)
         # Change players
         next_player = 2 if self.player == 1 else 1
@@ -203,6 +203,7 @@ class MCTSNode:
                     (child.wins / child.visits) +
                     c * math.sqrt(math.log(self.visits) / child.visits))
 
+    # TODO: Change??
     def rollout(self):
         """Play random moves until the game ends."""
         # Copy board so we don't overwrite the original
@@ -270,8 +271,19 @@ class RandomMCTSAgent(BaseAgent):
     def get_move(self, board, valid_moves):
         if not valid_moves:
             return None
-        # TODO: Replace with full Monte Carlo Tree Search
-        return random.choice(valid_moves)
+        # Copy board
+        state_copy = [row[:] for row in board]
+
+        # Find best action
+        best_move = mcts_search(state_copy, iterations=500)
+
+        # If MCTS = invalid or none
+        if best_move not in valid_moves:
+            # Testing purposes
+            print("Random move selected")
+            return random.choice(valid_moves)
+
+        return best_move
 
 class MinimaxAgent(BaseAgent):
     """Placeholder for Minimax logic — currently plays randomly."""
