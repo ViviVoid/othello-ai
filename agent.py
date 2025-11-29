@@ -180,8 +180,8 @@ class MCTSNode:
         # Selects one move to make
         move = self.untried_actions.pop()
         # Complete said move
-        # TODO: Fix error
-        new_state = apply_action(self.state, self.player, move)
+        # original: new_state = apply_action(self.state, self.player, move)
+        new_state = self.state.apply_action(self.player, move)
         # Change players
         next_player = 2 if self.player == 1 else 1
         # Create new MCTS for new state
@@ -239,7 +239,7 @@ class MCTSNode:
             self.parent.backpropagate(result)
 
 ## Search
-### DONE
+### DONE (theoretically)
 def mcts_search(root_state, iterations=500):
     root = MCTSNode(root_state)
 
@@ -261,8 +261,7 @@ def mcts_search(root_state, iterations=500):
         node.backpropagate(result)
 
     # Return best move
-    # TODO: Fix
-    return best_child(root, c=0).action
+    return root.best_child(c=0).action
 
 
 class RandomMCTSAgent(BaseAgent):
