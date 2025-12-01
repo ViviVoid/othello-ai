@@ -1,7 +1,7 @@
 {
   "agents": [
-    ["minimax", true, 3],
-    ["minimax", true, 2]
+    ["minimax", true, 5],
+    ["minimax", true, 5]
   ],
   "display": false,
   "num_games": 100
