@@ -8,6 +8,7 @@ import os
 from datetime import datetime
 from main import run_game
 import numpy as np
+import tracemalloc
 
 
 def run_batch_simulation(config_file, num_games=100, output_dir="results"):
@@ -34,6 +35,7 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
         'white_scores': [],
         'black_scores': [],
         'move_times': {'black': [], 'white': []},
+        'memory_usage_mb': [],
         'config': environment_data,
         'num_games': num_games,
         'timestamp': datetime.now().isoformat()
@@ -45,6 +47,8 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
     print(f"Running {num_games} games: {black_agent_type} (Black) vs {white_agent_type} (White)")
     print("=" * 60)
     
+    # Start memory tracking
+    tracemalloc.start()
     start_time = time.time()
     
     for game_num in range(1, num_games + 1):
@@ -54,6 +58,12 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
         game_start = time.time()
         result = run_game(environment_data, display=False)
         game_time = time.time() - game_start
+        
+        # Get memory usage after game (current and peak)
+        current, peak = tracemalloc.get_traced_memory()
+        # Store current memory usage for this game (convert bytes to MB)
+        current_memory_mb = current / (1024 * 1024)
+        stats['memory_usage_mb'].append(current_memory_mb)
         
         if result:
             # Update statistics
@@ -70,6 +80,10 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
     
     total_time = time.time() - start_time
     
+    # Get final memory statistics before stopping
+    current_final, peak_final = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
+    
     # Calculate summary statistics
     stats['summary'] = {
         'black_win_rate': stats['black_wins'] / num_games * 100,
@@ -80,7 +94,11 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
         'avg_black_score': np.mean(stats['black_scores']) if stats['black_scores'] else 0,
         'avg_white_score_diff': np.mean([w - b for w, b in zip(stats['white_scores'], stats['black_scores'])]) if stats['white_scores'] else 0,
         'total_time_seconds': total_time,
-        'avg_time_per_game': total_time / num_games
+        'avg_time_per_game': total_time / num_games,
+        'avg_memory_usage_mb': np.mean(stats['memory_usage_mb']) if stats['memory_usage_mb'] else 0,
+        'max_memory_usage_mb': np.max(stats['memory_usage_mb']) if stats['memory_usage_mb'] else 0,
+        'min_memory_usage_mb': np.min(stats['memory_usage_mb']) if stats['memory_usage_mb'] else 0,
+        'peak_memory_usage_mb': peak_final / (1024 * 1024) if peak_final else 0
     }
     
     # Save results
@@ -102,6 +120,11 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
     print(f"Average score difference (white - black): {stats['summary']['avg_white_score_diff']:.2f}")
     print(f"\nTotal time: {total_time:.2f} seconds")
     print(f"Average time per game: {stats['summary']['avg_time_per_game']:.4f} seconds")
+    print(f"\nMemory usage:")
+    print(f"  Average per game: {stats['summary']['avg_memory_usage_mb']:.2f} MB")
+    print(f"  Peak (overall): {stats['summary']['peak_memory_usage_mb']:.2f} MB")
+    print(f"  Maximum per game: {stats['summary']['max_memory_usage_mb']:.2f} MB")
+    print(f"  Minimum per game: {stats['summary']['min_memory_usage_mb']:.2f} MB")
     print(f"\nResults saved to: {output_file}")
     
     return stats
