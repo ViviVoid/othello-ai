@@ -241,7 +241,7 @@ def run_game(environment_data, display=True, output_file=""):
     board = create_board()
     player = -1  # Black starts
     running = True
-    move_count = 0
+    move_count = [0, 0]  # [black_moves, white_moves]
     game_log = []
     
     while running:
@@ -297,7 +297,7 @@ def run_game(environment_data, display=True, output_file=""):
 
         if move:
             board = apply_move(board, move, player)
-            move_count += 1
+            move_count[0 if player == -1 else 1] += 1
             player *= -1
 
         if display:
