@@ -5,7 +5,9 @@ import pygame
 import argparse
 import json
 import sys
+import os
 import numpy as np
+from datetime import datetime
 from agent import HumanAgent, RandomMCTSAgent, MinimaxAgent, RandomAgent
 
 # --- Game constants ---
@@ -217,7 +219,7 @@ def create_agent(agent_details, first):
 
 
 # --- Main Game Loop ---
-def run_game(environment_data, display=True, output_file=""):
+def run_game(environment_data, display=True, output_file="", save_replay=False, replay_file=""):
     """
     Run a single game of Othello.
     
@@ -225,6 +227,8 @@ def run_game(environment_data, display=True, output_file=""):
         environment_data: Dictionary with agent configurations
         display: Whether to show pygame display
         output_file: Optional file path to write game results
+        save_replay: Whether to save replay data
+        replay_file: Optional file path to save replay data
     
     Returns:
         Dictionary with game results
@@ -243,6 +247,19 @@ def run_game(environment_data, display=True, output_file=""):
     running = True
     move_count = [0, 0]  # [black_moves, white_moves]
     game_log = []
+    
+    # Record initial board state
+    if save_replay:
+        whites, blacks = count_discs(board)
+        game_log.append({
+            'move_number': 0,
+            'player': None,
+            'move': None,
+            'board': board.tolist(),
+            'white_score': int(whites),
+            'black_score': int(blacks),
+            'valid_moves': []
+        })
     
     while running:
         valid_moves = get_valid_moves(board, player)
@@ -278,11 +295,39 @@ def run_game(environment_data, display=True, output_file=""):
                     'final_board': board.tolist()
                 }
                 
+                # Add final state to replay log
+                if save_replay:
+                    game_log.append({
+                        'move_number': sum(move_count),
+                        'player': None,
+                        'move': None,
+                        'board': board.tolist(),
+                        'white_score': int(whites),
+                        'black_score': int(blacks),
+                        'valid_moves': [],
+                        'game_over': True,
+                        'winner': winner
+                    })
+                
                 if output_file:
                     with open(output_file, "w") as f:
                         json.dump(result, f, indent=2)
                 
+                # Save replay file
+                if save_replay and replay_file:
+                    replay_data = {
+                        'config': environment_data,
+                        'moves': game_log,
+                        'result': result,
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    os.makedirs(os.path.dirname(replay_file) if os.path.dirname(replay_file) else '.', exist_ok=True)
+                    with open(replay_file, "w") as f:
+                        json.dump(replay_data, f, indent=2)
+                    print(f"Replay saved to: {replay_file}")
+                
                 running = False
+                result['replay_data'] = game_log if save_replay else None
                 return result
             else:
                 # Skip turn
@@ -296,8 +341,29 @@ def run_game(environment_data, display=True, output_file=""):
             move = white_agent.get_move(board, valid_moves)
 
         if move:
+            # Record move before applying it
+            if save_replay:
+                whites, blacks = count_discs(board)
+                game_log.append({
+                    'move_number': sum(move_count) + 1,
+                    'player': 'black' if player == -1 else 'white',
+                    'move': move,
+                    'board_before': board.tolist(),
+                    'white_score_before': int(whites),
+                    'black_score_before': int(blacks),
+                    'valid_moves': valid_moves
+                })
+            
             board = apply_move(board, move, player)
             move_count[0 if player == -1 else 1] += 1
+            
+            # Record board state after move
+            if save_replay:
+                whites, blacks = count_discs(board)
+                game_log[-1]['board_after'] = board.tolist()
+                game_log[-1]['white_score_after'] = int(whites)
+                game_log[-1]['black_score_after'] = int(blacks)
+            
             player *= -1
 
         if display:
@@ -329,13 +395,37 @@ def main():
         action="store_true",
         help="Run in headless mode (no display)"
     )
+    parser.add_argument(
+        "--replay",
+        default="",
+        help="Save replay file (JSON format)"
+    )
+    parser.add_argument(
+        "--gif",
+        action="store_true",
+        help="Generate GIF from replay file after game (requires --replay)"
+    )
     args = parser.parse_args()
     
     with open(args.filename, "r") as file:
         environment_data = json.load(file)
     
     display = not args.headless
-    run_game(environment_data, display=display, output_file=args.outputfile)
+    save_replay = bool(args.replay)
+    result = run_game(environment_data, display=display, output_file=args.outputfile, 
+                      save_replay=save_replay, replay_file=args.replay)
+    
+    # Generate GIF if requested
+    if args.gif and args.replay and result and result.get('replay_data'):
+        try:
+            from gif_generator import generate_gif
+            gif_file = os.path.splitext(args.replay)[0] + ".gif"
+            generate_gif(args.replay, gif_file, duration=500, loop=0)
+            print(f"GIF generated: {gif_file}")
+        except ImportError:
+            print("Warning: Pillow not installed. Cannot generate GIF.")
+        except Exception as e:
+            print(f"Warning: Could not generate GIF: {e}")
 
 
 if __name__ == "__main__":

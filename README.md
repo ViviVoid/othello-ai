@@ -28,6 +28,15 @@ python main.py -f example-minimax.json --headless
 python main.py -f example-minimax.json -o game_result.json
 ```
 
+### With Replay File
+```bash
+# Save replay file
+python main.py -f example-minimax.json --replay game_replay.json
+
+# Save replay and generate GIF
+python main.py -f example-minimax.json --replay game_replay.json --gif
+```
+
 ## Batch Simulations
 
 Run multiple games for performance benchmarking:
@@ -76,9 +85,57 @@ The game includes board state evaluation functions:
 - `count_stable_discs(board, player)` - Count stable (unflippable) discs
 - `evaluate_board_state(board, player)` - Comprehensive board evaluation
 
+## Replay Functionality
+
+The game supports saving and replaying games with step-by-step navigation and undo/redo functionality.
+
+### Saving Replays
+
+Save a replay file during gameplay:
+```bash
+python main.py -f example-minimax.json --replay game_replay.json
+```
+
+This creates a JSON file containing all moves, board states, and game information.
+
+### Viewing Replays
+
+Use the replay viewer to step through a saved game:
+```bash
+python replay_viewer.py -f game_replay.json
+```
+
+**Controls:**
+- `←` / `→` : Step backward/forward through moves
+- `Home` / `End` : Jump to start/end of game
+- `U` / `R` : Undo/Redo navigation actions
+- `Q` / `ESC` : Quit viewer
+
+### Generating GIFs
+
+Generate an animated GIF from a replay file:
+```bash
+# Basic GIF generation
+python gif_generator.py -f game_replay.json
+
+# Custom duration and output file
+python gif_generator.py -f game_replay.json -o game_animation.gif -d 300
+
+# Options:
+# -d, --duration: Frame duration in milliseconds (default: 500)
+# -l, --loop: Number of loops, 0 = infinite (default: 0)
+```
+
+Or automatically generate GIF after a game:
+```bash
+python main.py -f example-minimax.json --replay game_replay.json --gif
+```
+
 ## Project Structure
 
 - `main.py` - Main game logic, pygame visualization, and game loop
 - `agent.py` - Agent implementations (Human, Random, Minimax, MCTS)
 - `batch_run.py` - Batch simulation script for performance analysis
+- `replay_viewer.py` - Interactive replay viewer with undo/redo
+- `gif_generator.py` - Generate animated GIFs from replay files
 - `example-*.json` - Example configuration files
