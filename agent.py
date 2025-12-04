@@ -5,8 +5,36 @@
 import random
 import pygame
 import math
+import numpy as np
+import sys
+import os
 
 CELL_SIZE = 80
+BOARD_SIZE = 8  # Default, will be overridden by import if available
+
+# Lazy import helper to avoid circular imports
+_game_functions = None
+
+def _get_game_functions():
+    """Lazy import of game logic functions from main.py to avoid circular imports."""
+    global _game_functions
+    if _game_functions is None:
+        try:
+            import main
+            _game_functions = {
+                'get_valid_moves': main.get_valid_moves,
+                'apply_move': main.apply_move,
+                'count_discs': main.count_discs,
+                'get_mobility': main.get_mobility,
+                'count_stable_discs': main.count_stable_discs,
+                'BOARD_SIZE': main.BOARD_SIZE
+            }
+        except (ImportError, AttributeError):
+            raise ImportError(
+                "Could not import game logic from main.py. "
+                "Make sure main.py is available and contains the required functions."
+            )
+    return _game_functions
 
 
 class BaseAgent:
@@ -20,6 +48,17 @@ class BaseAgent:
 class HumanAgent(BaseAgent):
     """Handles user mouse input for move selection."""
     def get_move(self, board, valid_moves):
+        # In headless mode, human agent cannot work - return None or random move
+        try:
+            import pygame
+            # Check if pygame is initialized and display is available
+            if not pygame.get_init():
+                # Headless mode - return None (will skip turn)
+                return None
+        except:
+            # Pygame not available - headless mode
+            return None
+        
         waiting_for_click = True
         while waiting_for_click:
             for event in pygame.event.get():
@@ -287,17 +326,218 @@ class RandomMCTSAgent(BaseAgent):
         return best_move
 
 class MinimaxAgent(BaseAgent):
-    """Placeholder for Minimax logic — currently plays randomly."""
-    # TODO: Implement Minimax algorithm
-    def __init__(self, player, abpruning=False, depth=1):
+    """Minimax agent with alpha-beta pruning for Othello."""
+    
+    def __init__(self, player, abpruning=True, depth=3):
         super().__init__(player)
         self.abpruning = abpruning
         self.depth = depth
+        
+        # Lazy load game functions on first use
+        self._game_funcs = None
+        
+        # Pre-compute edge positions (static, so compute once)
+        self.edge_positions = []
+        BOARD_SIZE = 8
+        for r in range(BOARD_SIZE):
+            if r == 0 or r == 7:
+                for c in range(1, 7):  # Exclude corners
+                    self.edge_positions.append((r, c))
+            else:
+                self.edge_positions.append((r, 0))
+                self.edge_positions.append((r, 7))
+        
+        # Heuristic weights (tuned for Othello)
+        self.weights = {
+            'corner': 25,      # Corner control is very important
+            'edge': 5,         # Edge control is valuable
+            'mobility': 10,    # Mobility (move options) is important
+            'stability': 15,   # Stable discs are valuable
+            'disc_count': 1,   # Disc count matters, especially in endgame
+            'parity': 0        # Parity can be added later
+        }
+    
+    def _load_game_functions(self):
+        """Lazy load game functions when needed."""
+        if self._game_funcs is None:
+            self._game_funcs = _get_game_functions()
+        return self._game_funcs
+    
+    def _quick_evaluate_move(self, board, move, player):
+        """Quick evaluation of a single move for move ordering."""
+        # Simple heuristic: prefer corners, then edges
+        r, c = move
+        if (r, c) in [(0, 0), (0, 7), (7, 0), (7, 7)]:
+            return 100  # Corners are best
+        elif (r, c) in self.edge_positions:
+            return 10   # Edges are good
+        else:
+            return 1    # Interior moves
+    
+    def _order_moves(self, board, moves, player):
+        """Order moves by heuristic value to improve alpha-beta pruning."""
+        # Sort moves by quick evaluation (best first)
+        return sorted(moves, key=lambda m: self._quick_evaluate_move(board, m, player), reverse=True)
+    
+    def evaluate_heuristic(self, board, player):
+        """
+        Evaluate board state using Othello-specific heuristics.
+        Returns a score from the perspective of the given player.
+        Optimized version that avoids redundant calculations.
+        """
+        game_funcs = self._load_game_functions()
+        count_discs = game_funcs['count_discs']
+        get_mobility = game_funcs['get_mobility']
+        count_stable_discs = game_funcs['count_stable_discs']
+        
+        opponent = -player
+        whites, blacks = count_discs(board)
+        total_discs = whites + blacks
+        
+        # Corner control (pre-computed corners list)
+        corners = [(0, 0), (0, 7), (7, 0), (7, 7)]
+        player_corners = sum(1 for r, c in corners if board[r][c] == player)
+        opponent_corners = sum(1 for r, c in corners if board[r][c] == opponent)
+        corner_score = self.weights['corner'] * (player_corners - opponent_corners)
+        
+        # Edge control (using pre-computed edge positions)
+        player_edges = sum(1 for r, c in self.edge_positions if board[r][c] == player)
+        opponent_edges = sum(1 for r, c in self.edge_positions if board[r][c] == opponent)
+        edge_score = self.weights['edge'] * (player_edges - opponent_edges)
+        
+        # Mobility (number of valid moves) - only compute if needed
+        player_mobility = get_mobility(board, player)
+        opponent_mobility = get_mobility(board, opponent)
+        mobility_score = self.weights['mobility'] * (player_mobility - opponent_mobility)
+        
+        # Disc stability - can be expensive, skip in early game
+        if total_discs > 20:  # Only compute stability after some discs are placed
+            player_stable = count_stable_discs(board, player)
+            opponent_stable = count_stable_discs(board, opponent)
+            stability_score = self.weights['stability'] * (player_stable - opponent_stable)
+        else:
+            stability_score = 0
+        
+        # Disc count (more important in endgame)
+        if player == 1:  # White
+            disc_diff = whites - blacks
+        else:  # Black
+            disc_diff = blacks - whites
+        
+        # Weight disc count more heavily in endgame (when board is mostly filled)
+        endgame_weight = self.weights['disc_count'] * (total_discs / 64.0)
+        disc_score = endgame_weight * disc_diff
+        
+        # Combine all heuristics
+        total_score = corner_score + edge_score + mobility_score + stability_score + disc_score
+        
+        return total_score
+    
+    def is_terminal(self, board):
+        """Check if the game is over (no moves for either player)."""
+        game_funcs = self._load_game_functions()
+        get_valid_moves = game_funcs['get_valid_moves']
+        return (len(get_valid_moves(board, 1)) == 0 and 
+                len(get_valid_moves(board, -1)) == 0)
+    
+    def minimax(self, board, depth, player, alpha, beta, maximizing_player):
+        """
+        Minimax algorithm with alpha-beta pruning and move ordering.
+        
+        Args:
+            board: Current board state
+            depth: Remaining search depth
+            player: Current player (1 for white, -1 for black)
+            alpha: Best value for maximizing player
+            beta: Best value for minimizing player
+            maximizing_player: True if we're maximizing for self.player
+        
+        Returns:
+            Tuple of (best_score, best_move)
+        """
+        game_funcs = self._load_game_functions()
+        get_valid_moves = game_funcs['get_valid_moves']
+        apply_move = game_funcs['apply_move']
+        
+        # Terminal conditions
+        if depth == 0 or self.is_terminal(board):
+            return self.evaluate_heuristic(board, self.player), None
+        
+        valid_moves = get_valid_moves(board, player)
+        
+        # If no valid moves, check opponent
+        if not valid_moves:
+            opponent_moves = get_valid_moves(board, -player)
+            if not opponent_moves:
+                # Game over - evaluate final position
+                return self.evaluate_heuristic(board, self.player), None
+            else:
+                # Skip turn - continue with opponent
+                return self.minimax(board, depth, -player, alpha, beta, maximizing_player)
+        
+        # Order moves for better alpha-beta pruning (best moves first)
+        ordered_moves = self._order_moves(board, valid_moves, player)
+        
+        best_move = None
+        
+        if maximizing_player:
+            max_eval = float('-inf')
+            for move in ordered_moves:
+                new_board = apply_move(board, move, player)
+                eval_score, _ = self.minimax(
+                    new_board, depth - 1, -player, alpha, beta, False
+                )
+                
+                if eval_score > max_eval:
+                    max_eval = eval_score
+                    best_move = move
+                
+                if self.abpruning:
+                    alpha = max(alpha, eval_score)
+                    if beta <= alpha:
+                        break  # Alpha-beta pruning
+        
+            return max_eval, best_move
+        else:
+            min_eval = float('inf')
+            for move in ordered_moves:
+                new_board = apply_move(board, move, player)
+                eval_score, _ = self.minimax(
+                    new_board, depth - 1, -player, alpha, beta, True
+                )
+                
+                if eval_score < min_eval:
+                    min_eval = eval_score
+                    best_move = move
+                
+                if self.abpruning:
+                    beta = min(beta, eval_score)
+                    if beta <= alpha:
+                        break  # Alpha-beta pruning
+            
+            return min_eval, best_move
+    
     def get_move(self, board, valid_moves):
+        """Get the best move using minimax search."""
         if not valid_moves:
             return None
-        # TODO: Replace with actual Minimax search
-        return random.choice(valid_moves)
+        
+        # If only one move, return it immediately
+        if len(valid_moves) == 1:
+            return valid_moves[0]
+        
+        # Run minimax search
+        _, best_move = self.minimax(
+            board, 
+            self.depth, 
+            self.player, 
+            float('-inf'), 
+            float('inf'), 
+            True
+        )
+        
+        # Fallback to first valid move if minimax returns None
+        return best_move if best_move is not None else valid_moves[0]
 
 class RandomAgent(BaseAgent):
     """Plays randomly."""
