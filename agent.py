@@ -203,6 +203,7 @@ class MCTSNode:
                     (child.wins / child.visits) +
                     c * math.sqrt(math.log(self.visits) / child.visits))
 
+
     # TODO: Change??
     def rollout(self):
         """Play random moves until the game ends."""
@@ -216,7 +217,7 @@ class MCTSNode:
             # winner = self.check_winner_for_state(state)
             # Determine if there is a winner
             winner = MCTSNode(state).check_winner()
-            # Determine who winner is if there is one
+            # Determine who winner is if applicable
             if winner: return 1 if winner == 1 else 0
 
             # Find available moves
