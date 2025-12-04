@@ -9,6 +9,8 @@ import numpy as np
 import sys
 import os
 
+#from main import get_valid_moves, count_discs, apply_move
+
 CELL_SIZE = 80
 BOARD_SIZE = 8  # Default, will be overridden by import if available
 
@@ -83,6 +85,8 @@ class HumanAgent(BaseAgent):
 ## MCTS Node Class
 class MCTSNode:
     def __init__(self, state, player, parent=None, action=None):
+        # All possible directions
+        self.DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
         self.state = state
         self.parent = parent
         self.children = []
@@ -91,8 +95,7 @@ class MCTSNode:
         self.action = action
         self.player = player
         self.untried_actions = self.get_actions()
-        # All possible directions
-        self.DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
+
 
 
     def on_board(self, r, c):
@@ -105,7 +108,8 @@ class MCTSNode:
 
     def get_actions(self):
         """Get valid actions from the state"""
-        opponent = 2 if self.player == 1 else 1
+        # opponent = 2 if self.player == 1 else 1
+        opponent = -self.player
         valid_moves = []
 
         # loop through every square
@@ -170,7 +174,8 @@ class MCTSNode:
             return [row[:] for row in self.state]
 
         r, c = action
-        opponent = 2 if self.player == 1 else 1
+        # opponent = 2 if self.player == 1 else 1
+        opponent = -self.player
 
         # Make copy so original board is unchanged
         new_board = [row[:] for row in self.state]
@@ -218,11 +223,13 @@ class MCTSNode:
 
         # Selects one move to make
         move = self.untried_actions.pop()
-        # Complete said move
         # original line: new_state = apply_action(self.state, self.player, move)
-        new_state = self.state.apply_action(self.player, move)
+        # new_state = self.state.apply_action(self.player, move)
+        # Complete said move
+        new_state = self.apply_action(move)
         # Change players
-        next_player = 2 if self.player == 1 else 1
+        # next_player = 2 if self.player == 1 else 1
+        next_player = -self.player
         # Create new MCTS for new state
         child = MCTSNode(new_state, next_player, parent=self, action=move)
         # Add new node to child list
@@ -246,30 +253,65 @@ class MCTSNode:
     # TODO: Change??
     def rollout(self):
         """Play random moves until the game ends."""
-        # Copy board so we don't overwrite the original
-        state = [row[:] for row in self.state]
+        # Stops circular crashing
+        from main import get_valid_moves, apply_move, count_discs
+        # # Potential bug fix
+        # board = np.asarray(self.state)
+        # # Copy board so we don't overwrite the original
+        # #state = [row[:] for row in self.state]
+        # state = [row[:] for row in board]
+        state = np.copy(self.state)
         # Get current player
-        player = self.get_current_player()
+        player = self.player
 
         while True:
-            # TODO: Check replacement code is equivalent?
-            # winner = self.check_winner_for_state(state)
-            # Determine if there is a winner
-            winner = MCTSNode(state).check_winner()
-            # Determine who winner is if applicable
-            if winner: return 1 if winner == 1 else 0
+            # # winner = self.check_winner_for_state(state)
+            # # Determine if there is a winner
+            # winner = MCTSNode(state).check_winner()
+            # # Determine who winner is if applicable
+            # if winner: return 1 if winner == 1 else 0
+            #
+            # # Find available moves
+            # actions = [(i, j) for i in range(3) for j in range(3) if state[i][j] == 0]
+            # # If there are no available moves return a draw
+            # if not actions: return 0.5
+            #
+            # # Determine random move
+            # move = random.choice(actions)
+            # # Make determined move
+            # state[move[0]][move[1]] = player
+            # # Switch players
+            # player = 1 if player == 2 else 2
 
-            # Find available moves
-            actions = [(i, j) for i in range(3) for j in range(3) if state[i][j] == 0]
-            # If there are no available moves return a draw
-            if not actions: return 0.5
 
-            # Determine random move
-            move = random.choice(actions)
-            # Make determined move
-            state[move[0]][move[1]] = player
-            # Switch players
-            player = 1 if player == 2 else 2
+            # Get possible moves
+            moves = get_valid_moves(state, player)
+
+            # if no viable moves
+            if not moves:
+                op_moves = get_valid_moves(state, -player)
+                # if opponent has no viable moves, game ends
+                if not op_moves:
+                    # Count discs
+                    w, b = count_discs(state)
+                    # Find winner and return numerical representation
+                    if self.player == 1:
+                        return 1 if w > b else 0 if b > w else 0.5
+                    else:
+                        return 1 if b > w else 0 if w > b else 0.5
+
+                # Skip turn
+                player = -player
+                continue
+
+            # Pick a random move for the simulation portion
+            move = random.choice(moves)
+            # apply move to board
+            state = apply_move(state, move, player)
+            # Change player
+            player = -player
+
+
 
 
     def backpropagate(self, result):
@@ -282,7 +324,20 @@ class MCTSNode:
 ## Search
 ### DONE (theoretically)
 def mcts_search(root_state, iterations=500):
-    root = MCTSNode(root_state)
+    def current_player(board):
+        # p1 = sum(row.count(1) for row in board)
+        # p2 = sum(row.count(2) for row in board)
+        # return 1 if p1 == p2 else 2
+        # p1 = int((board == 1).sum())
+        # p2 = int((board == -1).sum())
+        # p1 = sum(row.count(1) for row in board)
+        # p2 = sum(row.count(-1) for row in board)
+        p1 = np.count_nonzero(board == 1)
+        p2 = np.count_nonzero(board == -1)
+        return 1 if p1 == p2 else -1
+
+    root_player = current_player(root_state)
+    root = MCTSNode(root_state, root_player)
 
     for _ in range(iterations):
         node = root
