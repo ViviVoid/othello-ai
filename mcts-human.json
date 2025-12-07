@@ -1,0 +1,8 @@
+{
+  "agents": [
+    ["mcts"],
+    ["human"]
+  ],
+  "display": true,
+  "num_games": 1
+}

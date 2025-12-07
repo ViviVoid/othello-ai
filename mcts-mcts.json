@@ -1,8 +1,9 @@
 {
   "agents": [
     ["mcts"],
-    ["random"]
+    ["mcts"]
   ],
   "display": false,
   "num_games": 100
 }
+
