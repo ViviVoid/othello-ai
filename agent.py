@@ -364,11 +364,16 @@ def mcts_search(root_state, root_player, iterations=500):
 
         # Selection
         while not node.is_terminal() and node.is_fully_expanded():
-            node = node.best_child()
+            next_node = node.best_child()
+            if next_node is None:
+                break  # Can't select further, break out of selection
+            node = next_node
 
         # Expansion
-        if not node.is_terminal():
-            node = node.expand()
+        if not node.is_terminal() and not node.is_fully_expanded():
+            expanded_node = node.expand()
+            if expanded_node is not None:
+                node = expanded_node
 
         # Simulation - pass root player so evaluation is from correct perspective
         result = node.rollout(root_player=root_player)
