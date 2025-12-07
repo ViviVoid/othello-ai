@@ -87,7 +87,13 @@ class MCTSNode:
     def __init__(self, state, player, parent=None, action=None):
         # All possible directions
         self.DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)]
-        self.state = state
+        # Ensure state is a list of lists (not numpy array)
+        if isinstance(state, np.ndarray):
+            self.state = state.tolist()
+        elif isinstance(state, list):
+            self.state = [list(row) for row in state]
+        else:
+            self.state = state
         self.parent = parent
         self.children = []
         self.visits = 0
@@ -104,7 +110,9 @@ class MCTSNode:
 
     def game_over(self):
         """True if neither player has a valid move."""
-        return not self.get_actions() and not self.get_actions()
+        player_moves = self.get_actions()
+        opponent_moves = MCTSNode(self.state, -self.player).get_actions()
+        return not player_moves and not opponent_moves
 
     def get_actions(self):
         """Get valid actions from the state"""
@@ -171,14 +179,18 @@ class MCTSNode:
             """
         if action is None:
             # Don't do anything and return copy of the board
-            return [row[:] for row in self.state]
+            if isinstance(self.state, np.ndarray):
+                return self.state.copy().tolist()
+            return [list(row) for row in self.state]
 
         r, c = action
-        # opponent = 2 if self.player == 1 else 1
         opponent = -self.player
 
         # Make copy so original board is unchanged
-        new_board = [row[:] for row in self.state]
+        if isinstance(self.state, np.ndarray):
+            new_board = self.state.copy().tolist()
+        else:
+            new_board = [list(row) for row in self.state]
 
         # Place player's piece
         new_board[r][c] = self.player
@@ -245,45 +257,50 @@ class MCTSNode:
 
     def best_child(self, c=1.4):
         """Select child with best UCB1 score."""
+        if not self.children:
+            return None
+        # Safety check: if visits is 0, use a default value
         return max(self.children, key=lambda child:
-                    (child.wins / child.visits) +
-                    c * math.sqrt(math.log(self.visits) / child.visits))
+                    (child.wins / child.visits if child.visits > 0 else 0) +
+                    c * math.sqrt(math.log(self.visits + 1) / (child.visits + 1)))
 
 
-    # TODO: Change??
-    def rollout(self):
-        """Play random moves until the game ends."""
+    def rollout(self, root_player=None):
+        """Play random moves until the game ends.
+        
+        Args:
+            root_player: The player at the root of the MCTS tree (for evaluation).
+                        If None, uses self.player (for backward compatibility).
+        """
         # Stops circular crashing
         from main import get_valid_moves, apply_move, count_discs
-        # # Potential bug fix
-        # board = np.asarray(self.state)
-        # # Copy board so we don't overwrite the original
-        # #state = [row[:] for row in self.state]
-        # state = [row[:] for row in board]
-        state = np.copy(self.state)
-        # Get current player
+        
+        # Convert state to numpy array if it's a list
+        if isinstance(self.state, list):
+            state = np.array(self.state)
+        else:
+            state = np.copy(self.state)
+        
+        # Get current player (the player whose turn it is at this node)
         player = self.player
-
+        
+        # Determine root player for evaluation (the player whose perspective we evaluate from)
+        # If not provided, trace back to root
+        if root_player is None:
+            node = self
+            while node.parent is not None:
+                node = node.parent
+            # Root player is the parent's opponent (since root's children are after root's move)
+            # Actually, root's player IS the root player, so we need to go up one more level
+            # Wait, let's think: root node has player = root_player
+            # After root makes a move, child has player = -root_player
+            # So if we're at a child, parent.player is root_player
+            # But we want the original root player...
+            # Actually, simpler: store root player in node, or pass it down
+            # For now, use a simpler approach: evaluate from the perspective of the node that started the rollout
+            root_player = self.player if self.parent is None else self._get_root_player()
+        
         while True:
-            # # winner = self.check_winner_for_state(state)
-            # # Determine if there is a winner
-            # winner = MCTSNode(state).check_winner()
-            # # Determine who winner is if applicable
-            # if winner: return 1 if winner == 1 else 0
-            #
-            # # Find available moves
-            # actions = [(i, j) for i in range(3) for j in range(3) if state[i][j] == 0]
-            # # If there are no available moves return a draw
-            # if not actions: return 0.5
-            #
-            # # Determine random move
-            # move = random.choice(actions)
-            # # Make determined move
-            # state[move[0]][move[1]] = player
-            # # Switch players
-            # player = 1 if player == 2 else 2
-
-
             # Get possible moves
             moves = get_valid_moves(state, player)
 
@@ -294,11 +311,12 @@ class MCTSNode:
                 if not op_moves:
                     # Count discs
                     w, b = count_discs(state)
-                    # Find winner and return numerical representation
-                    if self.player == 1:
-                        return 1 if w > b else 0 if b > w else 0.5
-                    else:
-                        return 1 if b > w else 0 if w > b else 0.5
+                    # Find winner and return numerical representation from root player's perspective
+                    # Return 1 if root player wins, 0 if root player loses, 0.5 for draw
+                    if root_player == 1:  # Root player is white
+                        return 1.0 if w > b else 0.0 if b > w else 0.5
+                    else:  # Root player is black
+                        return 1.0 if b > w else 0.0 if w > b else 0.5
 
                 # Skip turn
                 player = -player
@@ -310,6 +328,13 @@ class MCTSNode:
             state = apply_move(state, move, player)
             # Change player
             player = -player
+    
+    def _get_root_player(self):
+        """Trace back to root to find the root player."""
+        node = self
+        while node.parent is not None:
+            node = node.parent
+        return node.player
 
 
 
@@ -323,20 +348,15 @@ class MCTSNode:
 
 ## Search
 ### DONE (theoretically)
-def mcts_search(root_state, iterations=500):
-    def current_player(board):
-        # p1 = sum(row.count(1) for row in board)
-        # p2 = sum(row.count(2) for row in board)
-        # return 1 if p1 == p2 else 2
-        # p1 = int((board == 1).sum())
-        # p2 = int((board == -1).sum())
-        # p1 = sum(row.count(1) for row in board)
-        # p2 = sum(row.count(-1) for row in board)
-        p1 = np.count_nonzero(board == 1)
-        p2 = np.count_nonzero(board == -1)
-        return 1 if p1 == p2 else -1
-
-    root_player = current_player(root_state)
+def mcts_search(root_state, root_player, iterations=500):
+    """
+    MCTS search to find best move.
+    
+    Args:
+        root_state: Current board state
+        root_player: Player whose turn it is (1 for white, -1 for black)
+        iterations: Number of MCTS iterations
+    """
     root = MCTSNode(root_state, root_player)
 
     for _ in range(iterations):
@@ -350,32 +370,39 @@ def mcts_search(root_state, iterations=500):
         if not node.is_terminal():
             node = node.expand()
 
-        # Simulation
-        result = node.rollout()
+        # Simulation - pass root player so evaluation is from correct perspective
+        result = node.rollout(root_player=root_player)
 
         # Backpropagation
         node.backpropagate(result)
 
     # Return best move
-    return root.best_child(c=0).action
+    if not root.children:
+        # Edge case: no children (shouldn't happen if there are valid moves)
+        return None
+    best_child_node = root.best_child(c=0)
+    if best_child_node is None:
+        return None
+    return best_child_node.action
 
 
 class RandomMCTSAgent(BaseAgent):
-    """Placeholder for MCTS logic — currently plays randomly."""
-    # TODO: Implement Monte Carlo Tree Search
+    """MCTS agent using Monte Carlo Tree Search."""
     def get_move(self, board, valid_moves):
         if not valid_moves:
             return None
-        # Copy board
-        state_copy = [row[:] for row in board]
+        
+        # Convert board to list of lists (handle numpy arrays)
+        if isinstance(board, np.ndarray):
+            state_copy = board.tolist()
+        else:
+            state_copy = [list(row) for row in board]
 
-        # Find best action
-        best_move = mcts_search(state_copy, iterations=500)
+        # Find best action - pass self.player so MCTS knows whose turn it is
+        best_move = mcts_search(state_copy, self.player, iterations=500)
 
-        # If MCTS = invalid or none
-        if best_move not in valid_moves:
-            # Testing purposes
-            print("Random move selected")
+        # If MCTS returns None or invalid move, fall back to random
+        if best_move is None or best_move not in valid_moves:
             return random.choice(valid_moves)
 
         return best_move
