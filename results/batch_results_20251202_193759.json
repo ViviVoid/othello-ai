@@ -1,0 +1,120 @@
+{
+  "black_wins": 0,
+  "white_wins": 10,
+  "draws": 0,
+  "total_moves": [
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ],
+    [
+      30,
+      30
+    ]
+  ],
+  "white_scores": [
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34,
+    34
+  ],
+  "black_scores": [
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30
+  ],
+  "move_times": {
+    "black": [],
+    "white": []
+  },
+  "memory_usage_mb": [
+    0.00754547119140625,
+    0.008270263671875,
+    0.00836181640625,
+    0.008453369140625,
+    0.008544921875,
+    0.008758544921875,
+    0.00885009765625,
+    0.008941650390625,
+    0.009033203125,
+    0.009368896484375
+  ],
+  "config": {
+    "agents": [
+      [
+        "minimax",
+        true,
+        4
+      ],
+      [
+        "minimax",
+        true,
+        4
+      ]
+    ],
+    "display": false,
+    "num_games": 100
+  },
+  "num_games": 10,
+  "timestamp": "2025-12-02T19:31:30.627586",
+  "summary": {
+    "black_win_rate": 0.0,
+    "white_win_rate": 100.0,
+    "draw_rate": 0.0,
+    "avg_total_moves": 30.0,
+    "avg_white_score": 34.0,
+    "avg_black_score": 30.0,
+    "avg_white_score_diff": 4.0,
+    "total_time_seconds": 388.651287317276,
+    "avg_time_per_game": 38.8651287317276,
+    "avg_memory_usage_mb": 0.008612823486328126,
+    "max_memory_usage_mb": 0.009368896484375,
+    "min_memory_usage_mb": 0.00754547119140625,
+    "peak_memory_usage_mb": 0.01641082763671875
+  }
+}
