@@ -212,7 +212,13 @@ def create_agent(agent_details, first):
             depth = agent_details[2] if len(agent_details) > 2 else 3
             return MinimaxAgent(first, use_alpha_beta, depth)
         case "mcts":
-            return RandomMCTSAgent(first)
+            # Parse MCTS parameters: [iterations, rollout_type, rollout_simulations]
+            iterations = agent_details[1] if len(agent_details) > 1 else 500
+            rollout_type = agent_details[2] if len(agent_details) > 2 else 'random'
+            rollout_simulations = agent_details[3] if len(agent_details) > 3 else 1
+            return RandomMCTSAgent(first, iterations=iterations, 
+                                  rollout_type=rollout_type, 
+                                  rollout_simulations=rollout_simulations)
         case "random":
             return RandomAgent(first)
         case _:
@@ -399,7 +405,7 @@ def main():
     parser = argparse.ArgumentParser(description="Othello Game")
     parser.add_argument(
         "-f", "--filename",
-        default="example-minimax.json",
+        default="game-environments/example-minimax.json",
         help="Game environment file"
     )
     parser.add_argument(

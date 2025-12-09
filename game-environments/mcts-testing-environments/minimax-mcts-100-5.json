@@ -1,7 +1,7 @@
 {
   "agents": [
-    ["minimax", true, 4],
-    ["minimax", true, 4]
+    ["minimax", true, 3],
+    ["mcts", 100, "random", 5]
   ],
   "display": false,
   "num_games": 100

@@ -9,6 +9,14 @@ from datetime import datetime
 from main import run_game
 import numpy as np
 import tracemalloc
+try:
+    from tqdm import tqdm
+    HAS_TQDM = True
+except ImportError:
+    HAS_TQDM = False
+    # Fallback if tqdm is not available
+    def tqdm(iterable, **kwargs):
+        return iterable
 
 
 def convert_numpy_types(obj):
@@ -68,10 +76,15 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
     tracemalloc.start()
     start_time = time.time()
     
-    for game_num in range(1, num_games + 1):
-        if game_num % 100 == 0:
-            print(f"Progress: {game_num}/{num_games} games completed")
-        
+    # Create progress bar
+    game_range = range(1, num_games + 1)
+    if HAS_TQDM:
+        pbar = tqdm(game_range, desc="Games", unit="game", 
+                   bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]')
+    else:
+        pbar = game_range
+    
+    for game_num in pbar:
         game_start = time.time()
         result = run_game(environment_data, display=False)
         game_time = time.time() - game_start
@@ -109,6 +122,18 @@ def run_batch_simulation(config_file, num_games=100, output_dir="results"):
                         'total_discs': move_data['total_discs'],
                         'valid_moves_count': move_data.get('valid_moves_count', 0)
                     })
+        
+        # Update progress bar description with current stats
+        if HAS_TQDM:
+            wins_so_far = stats['black_wins'] + stats['white_wins'] + stats['draws']
+            if wins_so_far > 0:
+                black_pct = (stats['black_wins'] / wins_so_far) * 100
+                white_pct = (stats['white_wins'] / wins_so_far) * 100
+                pbar.set_postfix({
+                    'Black': f'{stats["black_wins"]} ({black_pct:.1f}%)',
+                    'White': f'{stats["white_wins"]} ({white_pct:.1f}%)',
+                    'Draws': stats['draws']
+                })
     
     total_time = time.time() - start_time
     
@@ -310,7 +335,7 @@ def main():
     parser = argparse.ArgumentParser(description="Batch Othello Game Simulations")
     parser.add_argument(
         "-f", "--filename",
-        default="example-minimax.json",
+        default="game-environments/example-minimax.json",
         help="Game environment file"
     )
     parser.add_argument(

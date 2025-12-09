@@ -21,10 +21,12 @@ LOG_FILE="test_run_${TIMESTAMP}.log"
 
 # Test configurations
 declare -a TEST_CONFIGS=(
-    "mcts-random.json:MCTS vs Random (MCTS first)"
-    "random-mcts.json:Random vs MCTS (Random first)"
-    "mcts-mcts.json:MCTS vs MCTS (Complexity analysis)"
-    "random-random.json:Random vs Random (Baseline)"
+    "game-environments/mcts-random.json:MCTS vs Random (Complexity analysis)"
+    "game-environments/minimax-random.json:Minimax vs Random (Complexity analysis)"
+    "game-environments/mcts-minimax.json:MCTS vs Minimax (MCTS first)"
+    "game-environments/minimax-mcts.json:Minimax vs MCTS (Minimax first)"
+    "game-environments/mcts-mcts.json:MCTS vs MCTS (MCTS complexity)"
+    "game-environments/minimax-minimax.json:Minimax vs Minimax (Minimax complexity)"
 )
 
 # Create output directory
