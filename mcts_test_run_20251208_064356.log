@@ -203,3 +203,53 @@ Move Computation Time:
 Results saved to: results/mcts-data/batch_results_20251208_141438.json
 [2025-12-08 14:14:39] Test completed successfully in 10397 seconds
 [2025-12-08 14:14:39] Running test: MCTS(100i,10r) vs Minimax (MCTS first) (config: game-environments/mcts-testing-environments/mcts-minimax-100-10.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: mcts (Black) vs minimax (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 28 (28.00%)
+White wins: 72 (72.00%)
+Draws: 0 (0.00%)
+
+Average moves per game: 29.98
+Average white score: 41.26
+Average black score: 22.70
+Average score difference (white - black): 18.56
+
+Total time: 21348.76 seconds
+Average time per game: 213.4876 seconds
+
+Memory usage:
+  Average per game: 4.79 MB
+  Peak (overall): 9.89 MB
+  Maximum per game: 9.21 MB
+  Minimum per game: 0.52 MB
+
+Move Computation Time:
+  Black (mcts):
+    Average: 6.9537 seconds
+    Max: 18.0386 seconds
+    Min: 0.1325 seconds
+  White (minimax):
+    Average: 0.1892 seconds
+    Max: 1.1692 seconds
+    Min: 0.0000 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=6.9267s, max=18.0386s, moves=2000
+    Mid_game: avg=3.0991s, max=9.3345s, moves=2000
+    Late_game: avg=0.6489s, max=3.2941s, moves=1996
+
+  Timing by Board Fill:
+    Early (discs): avg=7.3421s, max=18.0386s, moves=1600
+    Mid (discs): avg=3.4314s, max=10.9589s, moves=2500
+    Late (discs): avg=0.5384s, max=2.8360s, moves=1896
+
+Results saved to: results/mcts-data/batch_results_20251208_201027.json
+[2025-12-08 20:10:27] Test completed successfully in 21348 seconds
+[2025-12-08 20:10:27] Running test: Minimax vs MCTS(100i,10r) (Minimax first) (config: game-environments/mcts-testing-environments/minimax-mcts-100-10.json)
