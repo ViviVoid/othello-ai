@@ -353,3 +353,53 @@ Move Computation Time:
 Results saved to: results/mcts-data/batch_results_20251209_081702.json
 [2025-12-09 08:17:02] Test completed successfully in 22544 seconds
 [2025-12-09 08:17:02] Running test: Minimax vs MCTS(1000i,1r) (Minimax first) (config: game-environments/mcts-testing-environments/minimax-mcts-1000-1.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: minimax (Black) vs mcts (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 68 (68.00%)
+White wins: 31 (31.00%)
+Draws: 1 (1.00%)
+
+Average moves per game: 30.00
+Average white score: 23.69
+Average black score: 40.30
+Average score difference (white - black): -16.61
+
+Total time: 21451.35 seconds
+Average time per game: 214.5135 seconds
+
+Memory usage:
+  Average per game: 6.47 MB
+  Peak (overall): 12.13 MB
+  Maximum per game: 11.43 MB
+  Minimum per game: 0.79 MB
+
+Move Computation Time:
+  Black (minimax):
+    Average: 0.1825 seconds
+    Max: 0.9720 seconds
+    Min: 0.0000 seconds
+  White (mcts):
+    Average: 7.0776 seconds
+    Max: 18.9492 seconds
+    Min: 0.2142 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=6.9303s, max=18.9492s, moves=2000
+    Mid_game: avg=3.1137s, max=10.1944s, moves=2000
+    Late_game: avg=0.6810s, max=3.2865s, moves=1999
+
+  Timing by Board Fill:
+    Early (discs): avg=7.3503s, max=18.9492s, moves=1600
+    Mid (discs): avg=3.3399s, max=11.6774s, moves=2500
+    Late (discs): avg=0.7051s, max=3.2865s, moves=1899
+
+Results saved to: results/mcts-data/batch_results_20251209_141434.json
+[2025-12-09 14:14:34] Test completed successfully in 21452 seconds
+[2025-12-09 14:14:34] Running test: MCTS(1000i,5r) vs Minimax (MCTS first) (config: game-environments/mcts-testing-environments/mcts-minimax-1000-5.json)
