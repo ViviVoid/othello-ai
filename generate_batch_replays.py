@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
+"""
+Batch Replay and GIF Generator from Batch Simulation Results
+
+This module generates replay files and animated GIFs from batch simulation
+result files. It re-runs games with replay saving enabled to create detailed
+replay data and optionally generates GIF animations for visualization.
+
+The module enables:
+- Converting batch result files into individual game replays
+- Generating animated GIFs showing game progression
+- Organizing replays by batch run in dedicated directories
+- Batch processing of multiple result files
+
+Authors:
+    Andy Dao (daoa@msoe.edu)
+"""
+
 # Andy Dao (daoa@msoe.edu)
-# Sierra Andrews (andrewss@msoe.edu)
 # Generate replays and GIFs from batch results
 
 import json
@@ -15,10 +31,16 @@ def generate_replays_from_batch(batch_results_file, output_dir=None, generate_gi
     """
     Generate replay files and GIFs from a batch results JSON file.
     
+    Loads a batch results file, extracts the configuration, and re-runs each
+    game with replay saving enabled. Optionally generates animated GIF files
+    for each game. Replays are saved in a directory structure based on the
+    batch file name.
+    
     Args:
-        batch_results_file: Path to batch results JSON file
-        output_dir: Directory to save replays (default: based on batch file name)
-        generate_gifs: Whether to generate GIF files
+        batch_results_file (str): Path to batch results JSON file
+        output_dir (str, optional): Directory to save replays. If None, uses
+                                   "replays/{batch_file_name}". Defaults to None.
+        generate_gifs (bool, optional): Whether to generate GIF files. Defaults to True.
     """
     # Load batch results
     with open(batch_results_file, 'r') as f:
@@ -74,6 +96,17 @@ def generate_replays_from_batch(batch_results_file, output_dir=None, generate_gi
 
 
 def main():
+    """
+    Main entry point for batch replay generation script.
+    
+    Parses command-line arguments and generates replays and GIFs from a
+    batch results file.
+    
+    Command-line arguments:
+        -f, --file: Batch results JSON file (required)
+        -o, --output-dir: Output directory for replays (optional)
+        --no-gifs: Skip GIF generation, only create JSON replays
+    """
     parser = argparse.ArgumentParser(
         description="Generate replays and GIFs from batch results"
     )

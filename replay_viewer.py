@@ -1,3 +1,26 @@
+"""
+Interactive Replay Viewer for Othello Games
+
+This module provides an interactive pygame-based viewer for replaying saved
+Othello games with full navigation controls including step-by-step movement,
+jump to start/end, and undo/redo functionality.
+
+The viewer displays:
+- Current board state at each move
+- Move information (player, position)
+- Score information (white and black disc counts)
+- Navigation controls and status
+
+Key Features:
+- Step forward/backward through moves
+- Jump to start or end of game
+- Undo/redo navigation actions
+- Real-time board visualization with pygame
+- Move history and game state display
+
+Author: Andy Dao (daoa@msoe.edu)
+"""
+
 # Andy Dao (daoa@msoe.edu)
 # Othello Replay Viewer with Undo/Redo
 
@@ -14,8 +37,35 @@ from main import (
 
 
 class ReplayViewer:
+    """
+    Interactive replay viewer for Othello games.
+    
+    This class manages replay visualization with pygame, handling board display,
+    move navigation, and user input. Supports step-by-step navigation, jumping
+    to positions, and undo/redo functionality.
+    
+    Attributes:
+        replay_data (dict): Loaded replay data from JSON file
+        moves (list): List of move data dictionaries
+        current_move_index (int): Index of currently displayed move
+        history (list): Navigation history for undo functionality
+        future (list): Navigation future for redo functionality
+        screen: pygame Surface for rendering
+        font: pygame Font for text rendering
+        small_font: pygame Font for smaller text
+        current_board: numpy array of current board state
+    """
+    
     def __init__(self, replay_file):
-        """Initialize the replay viewer with a replay file."""
+        """
+        Initialize the replay viewer with a replay file.
+        
+        Loads the replay JSON file, initializes pygame, and sets up the viewer
+        with the initial board state.
+        
+        Args:
+            replay_file (str): Path to replay JSON file
+        """
         with open(replay_file, "r") as f:
             self.replay_data = json.load(f)
         
@@ -37,7 +87,15 @@ class ReplayViewer:
             self.current_board = np.zeros((BOARD_SIZE, BOARD_SIZE), dtype=int)
     
     def get_current_state(self):
-        """Get the current board state and move info."""
+        """
+        Get the current board state and move information.
+        
+        Retrieves the board state for the current move index, preferring
+        board_after if available (shows state after move is applied).
+        
+        Returns:
+            tuple: (board, move_data) where board is numpy array and move_data is dict
+        """
         if self.current_move_index < len(self.moves):
             move_data = self.moves[self.current_move_index]
             # Prefer board_after if available (shows state after move)
@@ -57,7 +115,15 @@ class ReplayViewer:
         return self.current_board, None
     
     def step_forward(self):
-        """Move forward one step in the replay."""
+        """
+        Move forward one step in the replay.
+        
+        Advances to the next move in the replay, updating the current board state
+        and saving the previous position to history for undo functionality.
+        
+        Returns:
+            bool: True if step was successful, False if already at end
+        """
         if self.current_move_index < len(self.moves) - 1:
             # Save current state to history for undo
             self.history.append(self.current_move_index)
@@ -69,7 +135,15 @@ class ReplayViewer:
         return False
     
     def step_backward(self):
-        """Move backward one step in the replay (undo)."""
+        """
+        Move backward one step in the replay (undo).
+        
+        Moves to the previous move in the replay, updating the current board state
+        and saving the current position to future stack for redo functionality.
+        
+        Returns:
+            bool: True if step was successful, False if already at start
+        """
         if self.current_move_index > 0:
             # Save current state to future for redo
             self.future.append(self.current_move_index)
@@ -80,7 +154,12 @@ class ReplayViewer:
         return False
     
     def jump_to_start(self):
-        """Jump to the beginning of the replay."""
+        """
+        Jump to the beginning of the replay.
+        
+        Immediately moves to the first move (index 0) in the replay, updating
+        the board state and saving the current position to history.
+        """
         if self.current_move_index > 0:
             self.history.append(self.current_move_index)
             self.future = []
@@ -88,7 +167,12 @@ class ReplayViewer:
             self.current_board, _ = self.get_current_state()
     
     def jump_to_end(self):
-        """Jump to the end of the replay."""
+        """
+        Jump to the end of the replay.
+        
+        Immediately moves to the last move in the replay, updating the board
+        state and saving the current position to history.
+        """
         if self.current_move_index < len(self.moves) - 1:
             self.history.append(self.current_move_index)
             self.future = []
@@ -96,7 +180,15 @@ class ReplayViewer:
             self.current_board, _ = self.get_current_state()
     
     def undo(self):
-        """Undo the last navigation action."""
+        """
+        Undo the last navigation action.
+        
+        Restores the viewer to the position before the last navigation action
+        (step, jump, etc.), allowing users to undo navigation operations.
+        
+        Returns:
+            bool: True if undo was successful, False if no history
+        """
         if self.history:
             prev_index = self.history.pop()
             self.future.append(self.current_move_index)
@@ -106,7 +198,15 @@ class ReplayViewer:
         return False
     
     def redo(self):
-        """Redo a previously undone navigation action."""
+        """
+        Redo a previously undone navigation action.
+        
+        Restores the viewer to the position after an undo operation, allowing
+        users to redo navigation actions that were undone.
+        
+        Returns:
+            bool: True if redo was successful, False if no future actions
+        """
         if self.future:
             next_index = self.future.pop()
             self.history.append(self.current_move_index)
@@ -116,7 +216,13 @@ class ReplayViewer:
         return False
     
     def draw(self):
-        """Draw the current board state and replay controls."""
+        """
+        Draw the current board state and replay controls.
+        
+        Renders the current board state using the main.py draw_board function,
+        displays status information (move number, scores), move information,
+        and control help text.
+        """
         move_data = None
         board_to_draw = self.current_board
         
@@ -178,7 +284,13 @@ class ReplayViewer:
         pygame.display.flip()
     
     def run(self):
-        """Run the replay viewer main loop."""
+        """
+        Run the replay viewer main loop.
+        
+        Main event loop that handles pygame events, processes keyboard input,
+        updates the display, and manages the viewer state. Continues until
+        the user quits (Q or ESC key, or window close).
+        """
         clock = pygame.time.Clock()
         running = True
         
@@ -209,6 +321,15 @@ class ReplayViewer:
 
 
 def main():
+    """
+    Main entry point for replay viewer.
+    
+    Parses command-line arguments, loads the replay file, and starts the
+    interactive viewer.
+    
+    Command-line arguments:
+        -f, --file: Replay JSON file to view (required)
+    """
     parser = argparse.ArgumentParser(description="Othello Replay Viewer")
     parser.add_argument(
         "-f", "--file",

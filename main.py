@@ -1,3 +1,19 @@
+"""
+Othello Game Engine with Pygame Visualization
+
+This module implements the core Othello (Reversi) game logic, pygame-based visualization,
+board state evaluation heuristics, and game execution with replay functionality.
+
+The module provides:
+- Core game logic: board creation, move validation, move application
+- Board state heuristics: mobility, stability, disc counting, comprehensive evaluation
+- Game visualization: pygame-based board rendering with move highlighting
+- Game execution: main game loop with agent integration, move timing, replay data generation
+- Configuration loading: JSON-based agent and game configuration parsing
+
+Author: Andy Dao (daoa@msoe.edu)
+"""
+
 # Andy Dao (daoa@msoe.edu)
 # Othello Pygame
 
@@ -28,7 +44,19 @@ pygame_initialized = False
 
 
 def init_pygame():
-    """Initialize pygame for display mode."""
+    """
+    Initialize pygame for display mode.
+    
+    This function initializes the pygame library, creates the game window, and sets up
+    fonts. It uses a global flag to ensure pygame is only initialized once, even if
+    called multiple times. This is useful for headless mode where pygame should not
+    be initialized.
+    
+    Global variables modified:
+        screen: pygame Surface object representing the game window
+        font: pygame Font object for rendering text
+        pygame_initialized: Boolean flag indicating pygame has been initialized
+    """
     global screen, font, pygame_initialized
     if not pygame_initialized:
         pygame.init()
@@ -39,7 +67,19 @@ def init_pygame():
 
 
 # --- Core Game Logic ---
+
 def create_board():
+    """
+    Create and initialize the starting board state for Othello.
+    
+    The starting position has four discs in the center in a diagonal pattern:
+    - White (1) at positions (3,3) and (4,4)
+    - Black (-1) at positions (3,4) and (4,3)
+    
+    Returns:
+        numpy.ndarray: 8x8 numpy array representing the board state.
+                      Values: 0 = empty, 1 = white, -1 = black
+    """
     board = np.zeros((BOARD_SIZE, BOARD_SIZE), dtype=int)
     mid = BOARD_SIZE // 2
     board[mid - 1][mid - 1] = 1
@@ -50,10 +90,35 @@ def create_board():
 
 
 def in_bounds(r, c):
+    """
+    Check if given coordinates are within the board boundaries.
+    
+    Args:
+        r (int): Row index (0-based)
+        c (int): Column index (0-based)
+    
+    Returns:
+        bool: True if coordinates are within [0, BOARD_SIZE), False otherwise
+    """
     return 0 <= r < BOARD_SIZE and 0 <= c < BOARD_SIZE
 
 
 def get_valid_moves(board, player):
+    """
+    Get all valid moves for a player on the current board state.
+    
+    A move is valid if placing a disc at that position would flip at least one
+    opponent disc. The function checks all 8 directions (horizontal, vertical, diagonal)
+    from each empty position to find positions where the player's disc would form
+    a line with an existing player disc with opponent discs in between.
+    
+    Args:
+        board (numpy.ndarray): 8x8 board state (0 = empty, 1 = white, -1 = black)
+        player (int): Player to find moves for (1 for white, -1 for black)
+    
+    Returns:
+        list: List of (row, column) tuples representing valid move positions
+    """
     directions = [(-1, -1), (-1, 0), (-1, 1),
                   (0, -1), (0, 1),
                   (1, -1), (1, 0), (1, 1)]
@@ -77,6 +142,21 @@ def get_valid_moves(board, player):
 
 
 def apply_move(board, move, player):
+    """
+    Apply a move to the board and flip all appropriate opponent discs.
+    
+    This function places the player's disc at the move position and flips all
+    opponent discs that are sandwiched between the new disc and an existing
+    player disc in any of the 8 directions.
+    
+    Args:
+        board (numpy.ndarray): Current board state (0 = empty, 1 = white, -1 = black)
+        move (tuple): (row, column) position to place the disc
+        player (int): Player making the move (1 for white, -1 for black)
+    
+    Returns:
+        numpy.ndarray: New board state with the move applied and discs flipped
+    """
     directions = [(-1, -1), (-1, 0), (-1, 1),
                   (0, -1), (0, 1),
                   (1, -1), (1, 0), (1, 1)]
@@ -98,6 +178,15 @@ def apply_move(board, move, player):
 
 
 def count_discs(board):
+    """
+    Count the number of white and black discs on the board.
+    
+    Args:
+        board (numpy.ndarray): Board state (0 = empty, 1 = white, -1 = black)
+    
+    Returns:
+        tuple: (white_count, black_count) as integers
+    """
     whites = int(np.sum(board == 1))
     blacks = int(np.sum(board == -1))
     return whites, blacks
@@ -179,7 +268,18 @@ def evaluate_board_state(board, player):
 
 
 def draw_board(board, valid_moves, display=True):
-    """Draw the board. Only draws if display is True and pygame is initialized."""
+    """
+    Draw the Othello board using pygame.
+    
+    This function renders the game board with grid lines, discs (black and white circles),
+    and highlights valid move positions with yellow circles. The board is drawn on the
+    global screen surface.
+    
+    Args:
+        board (numpy.ndarray): Board state to render (0 = empty, 1 = white, -1 = black)
+        valid_moves (list): List of (row, col) tuples representing valid move positions
+        display (bool): If False, skip drawing (for headless mode). Defaults to True.
+    """
     if not display or not pygame_initialized:
         return
     screen.fill(GREEN)
@@ -203,6 +303,26 @@ def draw_board(board, valid_moves, display=True):
                                     row * CELL_SIZE + CELL_SIZE // 2), 30)
 
 def create_agent(agent_details, first):
+    """
+    Create an agent instance from configuration details.
+    
+    Parses agent configuration and instantiates the appropriate agent class with
+    specified parameters. Supports human, random, minimax, and mcts agent types.
+    
+    Args:
+        agent_details (list): Agent configuration [type, *params]
+            - ["human"]: Human player
+            - ["random"]: Random move agent
+            - ["minimax", use_alpha_beta, depth]: Minimax agent
+            - ["mcts", iterations, rollout_type, rollout_simulations]: MCTS agent
+        first (int): Player value (1 for white, -1 for black)
+    
+    Returns:
+        BaseAgent: Instance of the appropriate agent subclass
+    
+    Raises:
+        ValueError: If agent_type is not recognized
+    """
     agent_type = agent_details[0]
     match agent_type:
         case "human":
@@ -228,17 +348,33 @@ def create_agent(agent_details, first):
 # --- Main Game Loop ---
 def run_game(environment_data, display=True, output_file="", save_replay=False, replay_file=""):
     """
-    Run a single game of Othello.
+    Run a single game of Othello with specified agents.
+    
+    This function executes a complete game from start to finish, handling move
+    selection, board updates, turn management, and game termination. It tracks
+    move times, saves replay data if requested, and optionally writes results
+    to a file. Supports both interactive (with pygame display) and headless modes.
     
     Args:
-        environment_data: Dictionary with agent configurations
-        display: Whether to show pygame display
-        output_file: Optional file path to write game results
-        save_replay: Whether to save replay data
-        replay_file: Optional file path to save replay data
+        environment_data (dict): Dictionary containing game configuration:
+            - "agents": List of two agent configurations [agent1, agent2]
+            - "display": Optional boolean for display mode (default: True)
+            - Other optional configuration fields
+        display (bool): Whether to show pygame display. Defaults to True.
+        output_file (str): Optional file path to write game results JSON. Defaults to "".
+        save_replay (bool): Whether to save replay data. Defaults to False.
+        replay_file (str): Optional file path to save replay JSON data. Defaults to "".
     
     Returns:
-        Dictionary with game results
+        dict: Dictionary containing game results:
+            - "winner": String ("White", "Black", or "Draw")
+            - "winner_player": Integer (1 for white, -1 for black, 0 for draw)
+            - "white_score": Final white disc count
+            - "black_score": Final black disc count
+            - "total_moves": List [black_moves, white_moves]
+            - "final_board": Final board state as nested list
+            - "move_times": List of dicts with move timing data
+            - "replay_data": List of move data (if save_replay is True)
     """
     global screen, font
     
@@ -402,6 +538,19 @@ def run_game(environment_data, display=True, output_file="", save_replay=False, 
 
 
 def main():
+    """
+    Main entry point for the Othello game.
+    
+    Parses command-line arguments, loads game configuration from JSON file,
+    runs the game, and optionally generates GIF from replay file.
+    
+    Command-line arguments:
+        -f, --filename: Game environment configuration file (required)
+        -o, --outputfile: Output file for game results JSON (optional)
+        --headless: Run without pygame display (optional)
+        --replay: Path to save replay JSON file (optional)
+        --gif: Generate GIF from replay file after game (requires --replay)
+    """
     parser = argparse.ArgumentParser(description="Othello Game")
     parser.add_argument(
         "-f", "--filename",

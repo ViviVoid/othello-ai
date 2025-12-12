@@ -1,3 +1,25 @@
+"""
+Animated GIF Generator for Othello Game Replays
+
+This module generates animated GIF files from Othello replay JSON files using
+PIL/Pillow. It creates frame-by-frame animations showing game progression with
+board states, move information, and score displays.
+
+The module enables:
+- Converting replay JSON files into animated GIFs
+- Customizable frame duration and loop settings
+- Display of move information and game state on each frame
+- Special handling for important moves (corners, game over)
+
+Key Features:
+- Frame-by-frame board visualization
+- Move and score information overlay
+- Customizable animation timing
+- Support for infinite or limited loops
+
+Author: Andy Dao (daoa@msoe.edu)
+"""
+
 # Andy Dao (daoa@msoe.edu)
 # Othello Replay GIF Generator
 
@@ -20,7 +42,22 @@ HIGHLIGHT = (200, 200, 0)
 
 
 def draw_board_pil(board, valid_moves=None, move_info=None):
-    """Draw the board using PIL for GIF generation."""
+    """
+    Draw the Othello board using PIL/Pillow for GIF generation.
+    
+    Creates an image of the game board with grid lines, discs (black and white),
+    valid move highlights, and status text overlay. This is similar to the pygame
+    visualization but uses PIL for static image generation suitable for GIF frames.
+    
+    Args:
+        board (numpy.ndarray): Board state to render (0 = empty, 1 = white, -1 = black)
+        valid_moves (list, optional): List of (row, col) tuples for valid moves. Defaults to None.
+        move_info (dict, optional): Dictionary with move information (move_number, scores,
+                                    player, move, game_over, winner). Defaults to None.
+    
+    Returns:
+        PIL.Image: Image object representing the board state
+    """
     # Create image with extra space for status text
     img = Image.new('RGB', (WINDOW_SIZE, WINDOW_SIZE + 100), GREEN)
     draw = ImageDraw.Draw(img)
@@ -100,13 +137,18 @@ def draw_board_pil(board, valid_moves=None, move_info=None):
 
 def generate_gif(replay_file, output_file, duration=500, loop=0):
     """
-    Generate a GIF from a replay file.
+    Generate an animated GIF from a replay file.
+    
+    Loads a replay JSON file and creates an animated GIF showing the game
+    progression frame by frame. Each frame shows the board state after a move,
+    with move information and scores displayed. Special frames are added for
+    corner moves and game over states.
     
     Args:
-        replay_file: Path to replay JSON file
-        output_file: Path to output GIF file
-        duration: Duration of each frame in milliseconds
-        loop: Number of loops (0 = infinite)
+        replay_file (str): Path to replay JSON file
+        output_file (str): Path to output GIF file
+        duration (int, optional): Duration of each frame in milliseconds. Defaults to 500.
+        loop (int, optional): Number of loops (0 = infinite). Defaults to 0.
     """
     with open(replay_file, "r") as f:
         replay_data = json.load(f)
@@ -172,6 +214,17 @@ def generate_gif(replay_file, output_file, duration=500, loop=0):
 
 
 def main():
+    """
+    Main entry point for GIF generator.
+    
+    Parses command-line arguments and generates an animated GIF from a replay file.
+    
+    Command-line arguments:
+        -f, --file: Replay JSON file (required)
+        -o, --output: Output GIF file (default: replay file name with .gif extension)
+        -d, --duration: Frame duration in milliseconds (default: 500)
+        -l, --loop: Number of loops, 0 = infinite (default: 0)
+    """
     parser = argparse.ArgumentParser(description="Generate GIF from Othello Replay")
     parser.add_argument(
         "-f", "--file",

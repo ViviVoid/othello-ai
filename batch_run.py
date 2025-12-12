@@ -1,3 +1,25 @@
+"""
+Batch Simulation Script for Othello Game Performance Analysis
+
+This module provides tools for running multiple Othello games and collecting
+comprehensive statistical data for performance analysis and agent comparison.
+
+The module enables:
+- Running large batches of games (100s to 1000s) for statistical significance
+- Collecting detailed metrics: win rates, move times, memory usage, timing by game phase
+- Generating JSON result files with all collected statistics
+- Comparing multiple agent configurations in a single run
+- Progress tracking with optional progress bars (tqdm)
+
+Key Features:
+- Per-move timing analysis with game phase breakdown
+- Memory usage tracking throughout batch runs
+- Comprehensive statistics including averages, min, max, and distributions
+- Support for comparison matrices across multiple configurations
+
+Author: Andy Dao (daoa@msoe.edu)
+"""
+
 # Andy Dao (daoa@msoe.edu)
 # Batch Job Script for Othello Game Simulations
 
@@ -20,7 +42,19 @@ except ImportError:
 
 
 def convert_numpy_types(obj):
-    """Recursively convert numpy types to native Python types for JSON serialization."""
+    """
+    Recursively convert numpy types to native Python types for JSON serialization.
+    
+    JSON cannot serialize numpy types directly, so this function converts numpy
+    integers, floats, and arrays to native Python types recursively through
+    dictionaries and lists.
+    
+    Args:
+        obj: Object to convert (can be numpy type, dict, list, or other)
+    
+    Returns:
+        Object with numpy types converted to Python native types
+    """
     if isinstance(obj, np.integer):
         return int(obj)
     elif isinstance(obj, np.floating):
@@ -37,12 +71,26 @@ def convert_numpy_types(obj):
 
 def run_batch_simulation(config_file, num_games=100, output_dir="results"):
     """
-    Run multiple games and collect statistics.
+    Run multiple games and collect comprehensive statistics.
+    
+    Executes the specified number of games using the provided configuration,
+    collecting statistics on wins, scores, move times, memory usage, and game
+    progression. Results are saved to a JSON file with timestamp in the output
+    directory. Supports progress tracking and detailed timing analysis by game phase.
     
     Args:
-        config_file: Path to JSON configuration file
-        num_games: Number of games to run
-        output_dir: Directory to save results
+        config_file (str): Path to JSON configuration file specifying agent matchups
+        num_games (int, optional): Number of games to run. Defaults to 100.
+        output_dir (str, optional): Directory to save result JSON files. Defaults to "results".
+    
+    Returns:
+        dict: Dictionary containing all collected statistics including:
+            - Win statistics (black_wins, white_wins, draws, win_rates)
+            - Score statistics (white_scores, black_scores, averages)
+            - Move statistics (total_moves, move counts)
+            - Timing data (per-player, by game phase, by board fill)
+            - Memory usage (average, peak, min, max)
+            - Summary statistics (all calculated averages and rates)
     """
     import os
     os.makedirs(output_dir, exist_ok=True)
@@ -302,10 +350,18 @@ def run_comparison_matrix(config_files, num_games=100, output_dir="results"):
     """
     Run comparisons between different agent configurations.
     
+    Executes batch simulations for multiple configuration files, allowing
+    direct comparison of different agent matchups or parameter settings.
+    Results for each configuration are saved separately, and a summary
+    comparison file is generated.
+    
     Args:
-        config_files: List of configuration file paths
-        num_games: Number of games per configuration
-        output_dir: Directory to save results
+        config_files (list): List of configuration file paths to compare
+        num_games (int, optional): Number of games per configuration. Defaults to 100.
+        output_dir (str, optional): Directory to save result files. Defaults to "results".
+    
+    Returns:
+        list: List of dictionaries, each containing results for one configuration
     """
     import os
     os.makedirs(output_dir, exist_ok=True)
@@ -332,6 +388,18 @@ def run_comparison_matrix(config_files, num_games=100, output_dir="results"):
 
 
 def main():
+    """
+    Main entry point for batch simulation script.
+    
+    Parses command-line arguments and runs either a single batch simulation
+    or a comparison matrix of multiple configurations.
+    
+    Command-line arguments:
+        -f, --filename: Configuration file for single batch run
+        -n, --num-games: Number of games to run (default: 100)
+        -o, --output-dir: Output directory for results (default: "results")
+        -c, --compare: List of config files for comparison matrix
+    """
     parser = argparse.ArgumentParser(description="Batch Othello Game Simulations")
     parser.add_argument(
         "-f", "--filename",
