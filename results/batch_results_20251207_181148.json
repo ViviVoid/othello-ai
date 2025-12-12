@@ -1,0 +1,583 @@
+{
+  "black_wins": 1,
+  "white_wins": 0,
+  "draws": 0,
+  "total_moves": [
+    [
+      31,
+      29
+    ]
+  ],
+  "white_scores": [
+    18
+  ],
+  "black_scores": [
+    46
+  ],
+  "move_times": {
+    "black": [
+      69.8808844089508,
+      72.66256904602051,
+      69.4315025806427,
+      66.75094652175903,
+      64.03259015083313,
+      62.723135232925415,
+      55.96054005622864,
+      52.192620277404785,
+      48.44349265098572,
+      44.93148374557495,
+      41.965147972106934,
+      38.6753671169281,
+      35.026896953582764,
+      31.72664785385132,
+      29.168288946151733,
+      25.351226568222046,
+      22.814494132995605,
+      21.12829852104187,
+      18.258325338363647,
+      15.669692516326904,
+      14.452615976333618,
+      12.288830757141113,
+      10.490562915802002,
+      8.556302547454834,
+      7.57231068611145,
+      6.269302845001221,
+      5.1175501346588135,
+      3.7933740615844727,
+      2.5418004989624023,
+      1.2890424728393555,
+      0.9621169567108154
+    ],
+    "white": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "move_times_by_position": [
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 69.8808844089508,
+      "total_discs": 4,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 5,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 3,
+      "player": "black",
+      "time_seconds": 72.66256904602051,
+      "total_discs": 6,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 4,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 7,
+      "valid_moves_count": 6
+    },
+    {
+      "move_number": 5,
+      "player": "black",
+      "time_seconds": 69.4315025806427,
+      "total_discs": 8,
+      "valid_moves_count": 5
+    },
+    {
+      "move_number": 6,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 9,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 7,
+      "player": "black",
+      "time_seconds": 66.75094652175903,
+      "total_discs": 10,
+      "valid_moves_count": 6
+    },
+    {
+      "move_number": 8,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 11,
+      "valid_moves_count": 6
+    },
+    {
+      "move_number": 9,
+      "player": "black",
+      "time_seconds": 64.03259015083313,
+      "total_discs": 12,
+      "valid_moves_count": 7
+    },
+    {
+      "move_number": 10,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 13,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 11,
+      "player": "black",
+      "time_seconds": 62.723135232925415,
+      "total_discs": 14,
+      "valid_moves_count": 6
+    },
+    {
+      "move_number": 12,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 15,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 13,
+      "player": "black",
+      "time_seconds": 55.96054005622864,
+      "total_discs": 16,
+      "valid_moves_count": 7
+    },
+    {
+      "move_number": 14,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 17,
+      "valid_moves_count": 7
+    },
+    {
+      "move_number": 15,
+      "player": "black",
+      "time_seconds": 52.192620277404785,
+      "total_discs": 18,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 16,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 19,
+      "valid_moves_count": 9
+    },
+    {
+      "move_number": 17,
+      "player": "black",
+      "time_seconds": 48.44349265098572,
+      "total_discs": 20,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 18,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 21,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 19,
+      "player": "black",
+      "time_seconds": 44.93148374557495,
+      "total_discs": 22,
+      "valid_moves_count": 9
+    },
+    {
+      "move_number": 20,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 23,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 21,
+      "player": "black",
+      "time_seconds": 41.965147972106934,
+      "total_discs": 24,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 22,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 25,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 23,
+      "player": "black",
+      "time_seconds": 38.6753671169281,
+      "total_discs": 26,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 24,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 27,
+      "valid_moves_count": 12
+    },
+    {
+      "move_number": 25,
+      "player": "black",
+      "time_seconds": 35.026896953582764,
+      "total_discs": 28,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 26,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 29,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 27,
+      "player": "black",
+      "time_seconds": 31.72664785385132,
+      "total_discs": 30,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 28,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 31,
+      "valid_moves_count": 16
+    },
+    {
+      "move_number": 29,
+      "player": "black",
+      "time_seconds": 29.168288946151733,
+      "total_discs": 32,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 30,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 33,
+      "valid_moves_count": 15
+    },
+    {
+      "move_number": 31,
+      "player": "black",
+      "time_seconds": 25.351226568222046,
+      "total_discs": 34,
+      "valid_moves_count": 8
+    },
+    {
+      "move_number": 32,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 35,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 33,
+      "player": "black",
+      "time_seconds": 22.814494132995605,
+      "total_discs": 36,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 34,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 37,
+      "valid_moves_count": 12
+    },
+    {
+      "move_number": 35,
+      "player": "black",
+      "time_seconds": 21.12829852104187,
+      "total_discs": 38,
+      "valid_moves_count": 14
+    },
+    {
+      "move_number": 36,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 39,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 37,
+      "player": "black",
+      "time_seconds": 18.258325338363647,
+      "total_discs": 40,
+      "valid_moves_count": 12
+    },
+    {
+      "move_number": 38,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 41,
+      "valid_moves_count": 8
+    },
+    {
+      "move_number": 39,
+      "player": "black",
+      "time_seconds": 15.669692516326904,
+      "total_discs": 42,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 40,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 43,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 41,
+      "player": "black",
+      "time_seconds": 14.452615976333618,
+      "total_discs": 44,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 42,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 45,
+      "valid_moves_count": 7
+    },
+    {
+      "move_number": 43,
+      "player": "black",
+      "time_seconds": 12.288830757141113,
+      "total_discs": 46,
+      "valid_moves_count": 10
+    },
+    {
+      "move_number": 44,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 47,
+      "valid_moves_count": 6
+    },
+    {
+      "move_number": 45,
+      "player": "black",
+      "time_seconds": 10.490562915802002,
+      "total_discs": 48,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 46,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 49,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 47,
+      "player": "black",
+      "time_seconds": 8.556302547454834,
+      "total_discs": 50,
+      "valid_moves_count": 11
+    },
+    {
+      "move_number": 48,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 51,
+      "valid_moves_count": 2
+    },
+    {
+      "move_number": 49,
+      "player": "black",
+      "time_seconds": 7.57231068611145,
+      "total_discs": 52,
+      "valid_moves_count": 9
+    },
+    {
+      "move_number": 50,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 53,
+      "valid_moves_count": 1
+    },
+    {
+      "move_number": 51,
+      "player": "black",
+      "time_seconds": 6.269302845001221,
+      "total_discs": 54,
+      "valid_moves_count": 7
+    },
+    {
+      "move_number": 52,
+      "player": "black",
+      "time_seconds": 5.1175501346588135,
+      "total_discs": 55,
+      "valid_moves_count": 6
+    },
+    {
+      "move_number": 53,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 56,
+      "valid_moves_count": 2
+    },
+    {
+      "move_number": 54,
+      "player": "black",
+      "time_seconds": 3.7933740615844727,
+      "total_discs": 57,
+      "valid_moves_count": 6
+    },
+    {
+      "move_number": 55,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 58,
+      "valid_moves_count": 2
+    },
+    {
+      "move_number": 56,
+      "player": "black",
+      "time_seconds": 2.5418004989624023,
+      "total_discs": 59,
+      "valid_moves_count": 5
+    },
+    {
+      "move_number": 57,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 60,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 58,
+      "player": "black",
+      "time_seconds": 1.2890424728393555,
+      "total_discs": 61,
+      "valid_moves_count": 2
+    },
+    {
+      "move_number": 59,
+      "player": "white",
+      "time_seconds": 0.0,
+      "total_discs": 62,
+      "valid_moves_count": 2
+    },
+    {
+      "move_number": 60,
+      "player": "black",
+      "time_seconds": 0.9621169567108154,
+      "total_discs": 63,
+      "valid_moves_count": 1
+    }
+  ],
+  "memory_usage_mb": [
+    4.210243225097656
+  ],
+  "config": {
+    "agents": [
+      [
+        "mcts"
+      ],
+      [
+        "random"
+      ]
+    ],
+    "display": false,
+    "num_games": 100
+  },
+  "num_games": 1,
+  "timestamp": "2025-12-07T17:55:48.154281",
+  "summary": {
+    "black_win_rate": 100.0,
+    "white_win_rate": 0.0,
+    "draw_rate": 0.0,
+    "avg_total_moves": 30.0,
+    "avg_white_score": 18.0,
+    "avg_black_score": 46.0,
+    "avg_white_score_diff": -28.0,
+    "total_time_seconds": 960.3213360309601,
+    "avg_time_per_game": 960.3213360309601,
+    "avg_memory_usage_mb": 4.210243225097656,
+    "max_memory_usage_mb": 4.210243225097656,
+    "min_memory_usage_mb": 4.210243225097656,
+    "peak_memory_usage_mb": 8.424240112304688,
+    "avg_move_time_black": 30.9718696917257,
+    "max_move_time_black": 72.66256904602051,
+    "min_move_time_black": 0.9621169567108154,
+    "avg_move_time_white": 0.0,
+    "max_move_time_white": 0.0,
+    "min_move_time_white": 0.0,
+    "timing_by_game_phase": {
+      "early_game": {
+        "avg_time": 30.350488233566285,
+        "max_time": 72.66256904602051,
+        "min_time": 0.0,
+        "move_count": 20
+      },
+      "mid_game": {
+        "avg_time": 13.989219295978547,
+        "max_time": 41.965147972106934,
+        "min_time": 0.0,
+        "move_count": 20
+      },
+      "late_game": {
+        "avg_time": 3.666690492630005,
+        "max_time": 14.452615976333618,
+        "min_time": 0.0,
+        "move_count": 20
+      }
+    },
+    "timing_by_board_fill": {
+      "early": {
+        "avg_time": 32.10217426717281,
+        "max_time": 72.66256904602051,
+        "min_time": 0.0,
+        "move_count": 16
+      },
+      "mid": {
+        "avg_time": 15.50447913169861,
+        "max_time": 48.44349265098572,
+        "min_time": 0.0,
+        "move_count": 25
+      },
+      "late": {
+        "avg_time": 3.099010204014025,
+        "max_time": 12.288830757141113,
+        "min_time": 0.0,
+        "move_count": 19
+      }
+    }
+  }
+}

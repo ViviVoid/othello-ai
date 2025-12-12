@@ -1,0 +1,147 @@
+[2025-12-07 09:18:27] Starting heuristic fine-tuning test suite
+[2025-12-07 09:18:27] Configuration: NUM_GAMES=100, OUTPUT_DIR=results
+[2025-12-07 09:18:27] Running test: MCTS vs Random (MCTS first) (config: mcts-random.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: mcts (Black) vs random (White)
+============================================================
+Progress: 100/100 games completed
+Traceback (most recent call last):
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 325, in <module>
+    main()
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 321, in main
+    run_batch_simulation(args.filename, args.num_games, args.output_dir)
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 203, in run_batch_simulation
+    json.dump(stats, f, indent=2)
+  File "/usr/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type int64 is not JSON serializable
+[2025-12-07 09:20:13] Test completed successfully in 106 seconds
+[2025-12-07 09:20:13] Running test: Random vs MCTS (Random first) (config: random-mcts.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: random (Black) vs mcts (White)
+============================================================
+Progress: 100/100 games completed
+Traceback (most recent call last):
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 325, in <module>
+    main()
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 321, in main
+    run_batch_simulation(args.filename, args.num_games, args.output_dir)
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 203, in run_batch_simulation
+    json.dump(stats, f, indent=2)
+  File "/usr/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type int64 is not JSON serializable
+[2025-12-07 09:21:59] Test completed successfully in 106 seconds
+[2025-12-07 09:21:59] Running test: MCTS vs MCTS (Complexity analysis) (config: mcts-mcts.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: mcts (Black) vs mcts (White)
+============================================================
+Progress: 100/100 games completed
+Traceback (most recent call last):
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 325, in <module>
+    help="Output directory for results"
+^^^^^^
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 321, in main
+    )
+      
+  File "/home/andao/Documents/gitrepos/AI-repos/othello-ai/batch_run.py", line 203, in run_batch_simulation
+    if min_discs <= m['total_discs'] < max_discs]
+^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "/usr/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/usr/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type int64 is not JSON serializable
+[2025-12-07 09:25:27] Test completed successfully in 208 seconds
+[2025-12-07 09:25:27] Running test: Random vs Random (Baseline) (config: random-random.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: random (Black) vs random (White)
+============================================================
+Progress: 100/100 games completed
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 52 (52.00%)
+White wins: 43 (43.00%)
+Draws: 5 (5.00%)
+
+Average moves per game: 29.99
+Average white score: 30.46
+Average black score: 33.52
+Average score difference (white - black): -3.06
+
+Total time: 2.12 seconds
+Average time per game: 0.0212 seconds
+
+Memory usage:
+  Average per game: 0.66 MB
+  Peak (overall): 1.31 MB
+  Maximum per game: 1.31 MB
+  Minimum per game: 0.01 MB
+
+Move Computation Time:
+  Black (random):
+    Average: 0.0000 seconds
+    Max: 0.0000 seconds
+    Min: 0.0000 seconds
+  White (random):
+    Average: 0.0000 seconds
+    Max: 0.0000 seconds
+    Min: 0.0000 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=0.0000s, max=0.0000s, moves=2000
+    Mid_game: avg=0.0000s, max=0.0000s, moves=2000
+    Late_game: avg=0.0000s, max=0.0000s, moves=1998
+
+  Timing by Board Fill:
+    Early (discs): avg=0.0000s, max=0.0000s, moves=1600
+    Mid (discs): avg=0.0000s, max=0.0000s, moves=2500
+    Late (discs): avg=0.0000s, max=0.0000s, moves=1898
+
+Results saved to: results/batch_results_20251207_092529.json
+[2025-12-07 09:25:29] Test completed successfully in 2 seconds
+[2025-12-07 09:25:29] All tests completed

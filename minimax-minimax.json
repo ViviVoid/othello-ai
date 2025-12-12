@@ -1,9 +1,0 @@
-{
-  "agents": [
-    ["minimax", true, 4],
-    ["minimax", true, 4]
-  ],
-  "display": false,
-  "num_games": 100
-}
-

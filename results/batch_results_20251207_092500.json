@@ -1,0 +1,326 @@
+{
+  "black_wins": 0,
+  "white_wins": 10,
+  "draws": 0,
+  "total_moves": [
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "white_scores": [
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9
+  ],
+  "black_scores": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "move_times": {
+    "black": [
+      1.0658514499664307,
+      1.060072660446167,
+      1.0603766441345215,
+      1.0716845989227295,
+      1.0810613632202148,
+      1.0624208450317383,
+      1.0701017379760742,
+      1.0558559894561768,
+      1.0484766960144043,
+      1.0545241832733154
+    ],
+    "white": [
+      3.337860107421875e-06,
+      2.6226043701171875e-06,
+      2.6226043701171875e-06,
+      2.86102294921875e-06,
+      2.6226043701171875e-06,
+      3.0994415283203125e-06,
+      2.1457672119140625e-06,
+      2.384185791015625e-06,
+      2.1457672119140625e-06,
+      2.384185791015625e-06
+    ]
+  },
+  "move_times_by_position": [
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0658514499664307,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 3.337860107421875e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.060072660446167,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.6226043701171875e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0603766441345215,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.6226043701171875e-06,
+      "total_discs": 8,
+      "valid_moves_count": 2
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0716845989227295,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.86102294921875e-06,
+      "total_discs": 8,
+      "valid_moves_count": 2
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0810613632202148,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.6226043701171875e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0624208450317383,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 3.0994415283203125e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0701017379760742,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.1457672119140625e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0558559894561768,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.384185791015625e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0484766960144043,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.1457672119140625e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    },
+    {
+      "move_number": 1,
+      "player": "black",
+      "time_seconds": 1.0545241832733154,
+      "total_discs": 7,
+      "valid_moves_count": 4
+    },
+    {
+      "move_number": 2,
+      "player": "white",
+      "time_seconds": 2.384185791015625e-06,
+      "total_discs": 8,
+      "valid_moves_count": 3
+    }
+  ],
+  "memory_usage_mb": [
+    0.00875091552734375,
+    0.01650238037109375,
+    0.02381134033203125,
+    0.03086090087890625,
+    0.03768157958984375,
+    0.0161285400390625,
+    0.02155303955078125,
+    0.0269775390625,
+    0.03240203857421875,
+    0.038360595703125
+  ],
+  "config": {
+    "agents": [
+      [
+        "mcts"
+      ],
+      [
+        "random"
+      ]
+    ],
+    "display": false,
+    "num_games": 100
+  },
+  "num_games": 10,
+  "timestamp": "2025-12-07T09:24:49.776612",
+  "summary": {
+    "black_win_rate": 0.0,
+    "white_win_rate": 100.0,
+    "draw_rate": 0.0,
+    "avg_total_moves": 1.0,
+    "avg_white_score": 9.0,
+    "avg_black_score": 0.0,
+    "avg_white_score_diff": 9.0,
+    "total_time_seconds": 10.650824069976807,
+    "avg_time_per_game": 1.0650824069976808,
+    "avg_memory_usage_mb": 0.025302886962890625,
+    "max_memory_usage_mb": 0.038360595703125,
+    "min_memory_usage_mb": 0.00875091552734375,
+    "peak_memory_usage_mb": 0.044952392578125,
+    "avg_move_time_black": 1.0630426168441773,
+    "max_move_time_black": 1.0810613632202148,
+    "min_move_time_black": 1.0484766960144043,
+    "avg_move_time_white": 2.6226043701171875e-06,
+    "max_move_time_white": 3.337860107421875e-06,
+    "min_move_time_white": 2.1457672119140625e-06,
+    "timing_by_game_phase": {
+      "early_game": {
+        "avg_time": 0,
+        "max_time": 0,
+        "min_time": 0,
+        "move_count": 0
+      },
+      "mid_game": {
+        "avg_time": 1.0630426168441773,
+        "max_time": 1.0810613632202148,
+        "min_time": 1.0484766960144043,
+        "move_count": 10
+      },
+      "late_game": {
+        "avg_time": 2.6226043701171875e-06,
+        "max_time": 3.337860107421875e-06,
+        "min_time": 2.1457672119140625e-06,
+        "move_count": 10
+      }
+    },
+    "timing_by_board_fill": {
+      "early": {
+        "avg_time": 0.5315226197242737,
+        "max_time": 1.0810613632202148,
+        "min_time": 2.1457672119140625e-06,
+        "move_count": 20
+      },
+      "mid": {
+        "avg_time": 0,
+        "max_time": 0,
+        "min_time": 0,
+        "move_count": 0
+      },
+      "late": {
+        "avg_time": 0,
+        "max_time": 0,
+        "min_time": 0,
+        "move_count": 0
+      }
+    }
+  }
+}

@@ -15,26 +15,26 @@ pip install -r requirements.txt
 
 ### Interactive Mode (with display)
 ```bash
-python main.py -f example-minimax.json
+python main.py -f game-environments/example-minimax.json
 ```
 
 ### Headless Mode (no display, for batch processing)
 ```bash
-python main.py -f example-minimax.json --headless
+python main.py -f game-environments/example-minimax.json --headless
 ```
 
 ### With Output File
 ```bash
-python main.py -f example-minimax.json -o game_result.json
+python main.py -f game-environments/example-minimax.json -o game_result.json
 ```
 
 ### With Replay File
 ```bash
 # Save replay file
-python main.py -f example-minimax.json --replay game_replay.json
+python main.py -f game-environments/example-minimax.json --replay game_replay.json
 
 # Save replay and generate GIF
-python main.py -f example-minimax.json --replay game_replay.json --gif
+python main.py -f game-environments/example-minimax.json --replay game_replay.json --gif
 ```
 
 ## Batch Simulations
@@ -43,13 +43,13 @@ Run multiple games for performance benchmarking:
 
 ```bash
 # Run 100 games with default config
-python batch_run.py -f example-random-vs-random.json -n 100
+python batch_run.py -f game-environments/random-random.json -n 100
 
 # Run with custom output directory
-python batch_run.py -f example-random-vs-random.json -n 1000 -o results/
+python batch_run.py -f game-environments/random-random.json -n 1000 -o results/
 
 # Compare multiple configurations
-python batch_run.py -c example-random-vs-random.json example-mcts-vs-random.json -n 100
+python batch_run.py -c game-environments/random-random.json game-environments/mcts-random.json -n 100
 ```
 
 ## Configuration Files
@@ -93,7 +93,7 @@ The game supports saving and replaying games with step-by-step navigation and un
 
 Save a replay file during gameplay:
 ```bash
-python main.py -f example-minimax.json --replay game_replay.json
+python main.py -f game-environments/example-minimax.json --replay game_replay.json
 ```
 
 This creates a JSON file containing all moves, board states, and game information.
@@ -128,7 +128,7 @@ python gif_generator.py -f game_replay.json -o game_animation.gif -d 300
 
 Or automatically generate GIF after a game:
 ```bash
-python main.py -f example-minimax.json --replay game_replay.json --gif
+python main.py -f game-environments/example-minimax.json --replay game_replay.json --gif
 ```
 
 ## Project Structure
@@ -138,4 +138,4 @@ python main.py -f example-minimax.json --replay game_replay.json --gif
 - `batch_run.py` - Batch simulation script for performance analysis
 - `replay_viewer.py` - Interactive replay viewer with undo/redo
 - `gif_generator.py` - Generate animated GIFs from replay files
-- `example-*.json` - Example configuration files
+- `game-environments/` - Directory containing game configuration JSON files

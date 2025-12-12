@@ -7,6 +7,7 @@ import json
 import sys
 import os
 import numpy as np
+import time
 from datetime import datetime
 from agent import HumanAgent, RandomMCTSAgent, MinimaxAgent, RandomAgent
 
@@ -97,8 +98,8 @@ def apply_move(board, move, player):
 
 
 def count_discs(board):
-    whites = np.sum(board == 1)
-    blacks = np.sum(board == -1)
+    whites = int(np.sum(board == 1))
+    blacks = int(np.sum(board == -1))
     return whites, blacks
 
 
@@ -211,7 +212,13 @@ def create_agent(agent_details, first):
             depth = agent_details[2] if len(agent_details) > 2 else 3
             return MinimaxAgent(first, use_alpha_beta, depth)
         case "mcts":
-            return RandomMCTSAgent(first)
+            # Parse MCTS parameters: [iterations, rollout_type, rollout_simulations]
+            iterations = agent_details[1] if len(agent_details) > 1 else 500
+            rollout_type = agent_details[2] if len(agent_details) > 2 else 'random'
+            rollout_simulations = agent_details[3] if len(agent_details) > 3 else 1
+            return RandomMCTSAgent(first, iterations=iterations, 
+                                  rollout_type=rollout_type, 
+                                  rollout_simulations=rollout_simulations)
         case "random":
             return RandomAgent(first)
         case _:
@@ -247,6 +254,7 @@ def run_game(environment_data, display=True, output_file="", save_replay=False, 
     running = True
     move_count = [0, 0]  # [black_moves, white_moves]
     game_log = []
+    move_times = []  # Track timing for each move: [move_number, player, time_seconds, total_discs]
     
     # Record initial board state
     if save_replay:
@@ -292,7 +300,8 @@ def run_game(environment_data, display=True, output_file="", save_replay=False, 
                     'white_score': int(whites),
                     'black_score': int(blacks),
                     'total_moves': move_count,
-                    'final_board': board.tolist()
+                    'final_board': board.tolist(),
+                    'move_times': move_times
                 }
                 
                 # Add final state to replay log
@@ -335,10 +344,24 @@ def run_game(environment_data, display=True, output_file="", save_replay=False, 
                 continue
 
         # --- Agent move selection ---
+        # Track move computation time
+        move_start_time = time.time()
         if player == -1:
             move = black_agent.get_move(board, valid_moves)
         else:
             move = white_agent.get_move(board, valid_moves)
+        move_time = time.time() - move_start_time
+        
+        # Record move timing
+        whites, blacks = count_discs(board)
+        total_discs = whites + blacks
+        move_times.append({
+            'move_number': sum(move_count) + 1,
+            'player': 'black' if player == -1 else 'white',
+            'time_seconds': move_time,
+            'total_discs': total_discs,
+            'valid_moves_count': len(valid_moves)
+        })
 
         if move:
             # Record move before applying it
@@ -382,7 +405,7 @@ def main():
     parser = argparse.ArgumentParser(description="Othello Game")
     parser.add_argument(
         "-f", "--filename",
-        default="example-minimax.json",
+        default="game-environments/example-minimax.json",
         help="Game environment file"
     )
     parser.add_argument(

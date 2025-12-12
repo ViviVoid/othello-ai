@@ -1,0 +1,405 @@
+[2025-12-08 06:43:56] Starting MCTS vs Minimax hyperparameter test suite
+[2025-12-08 06:43:56] Configuration: NUM_GAMES=100, OUTPUT_DIR=results/mcts-data
+[2025-12-08 06:43:56] Iterations: 100 1000 10000
+[2025-12-08 06:43:56] Rollouts: 1 5 10
+[2025-12-08 06:43:56] Running test: MCTS(100i,1r) vs Minimax (MCTS first) (config: game-environments/mcts-testing-environments/mcts-minimax-100-1.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: mcts (Black) vs minimax (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 15 (15.00%)
+White wins: 85 (85.00%)
+Draws: 0 (0.00%)
+
+Average moves per game: 29.98
+Average white score: 46.15
+Average black score: 17.80
+Average score difference (white - black): 28.35
+
+Total time: 2853.00 seconds
+Average time per game: 28.5300 seconds
+
+Memory usage:
+  Average per game: 5.22 MB
+  Peak (overall): 9.80 MB
+  Maximum per game: 9.63 MB
+  Minimum per game: 0.87 MB
+
+Move Computation Time:
+  Black (mcts):
+    Average: 0.7606 seconds
+    Max: 1.9563 seconds
+    Min: 0.0218 seconds
+  White (minimax):
+    Average: 0.1936 seconds
+    Max: 1.0572 seconds
+    Min: 0.0000 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=0.8580s, max=1.9563s, moves=2000
+    Mid_game: avg=0.4644s, max=1.0471s, moves=2000
+    Late_game: avg=0.1032s, max=0.3805s, moves=1995
+
+  Timing by Board Fill:
+    Early (discs): avg=0.8866s, max=1.9563s, moves=1600
+    Mid (discs): avg=0.5035s, max=1.1826s, moves=2500
+    Late (discs): avg=0.0916s, max=0.3318s, moves=1895
+
+Results saved to: results/mcts-data/batch_results_20251208_073129.json
+[2025-12-08 07:31:30] Test completed successfully in 2854 seconds
+[2025-12-08 07:31:30] Running test: Minimax vs MCTS(100i,1r) (Minimax first) (config: game-environments/mcts-testing-environments/minimax-mcts-100-1.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: minimax (Black) vs mcts (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 79 (79.00%)
+White wins: 18 (18.00%)
+Draws: 3 (3.00%)
+
+Average moves per game: 30.00
+Average white score: 19.03
+Average black score: 44.96
+Average score difference (white - black): -25.93
+
+Total time: 2728.95 seconds
+Average time per game: 27.2895 seconds
+
+Memory usage:
+  Average per game: 5.10 MB
+  Peak (overall): 9.82 MB
+  Maximum per game: 9.44 MB
+  Minimum per game: 0.67 MB
+
+Move Computation Time:
+  Black (minimax):
+    Average: 0.1919 seconds
+    Max: 1.1109 seconds
+    Min: 0.0000 seconds
+  White (mcts):
+    Average: 0.7266 seconds
+    Max: 1.8664 seconds
+    Min: 0.0216 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=0.8177s, max=1.8664s, moves=2000
+    Mid_game: avg=0.4476s, max=1.0909s, moves=2000
+    Late_game: avg=0.0982s, max=0.3738s, moves=1999
+
+  Timing by Board Fill:
+    Early (discs): avg=0.8455s, max=1.8664s, moves=1600
+    Mid (discs): avg=0.4768s, max=1.1678s, moves=2500
+    Late (discs): avg=0.0959s, max=0.3738s, moves=1899
+
+Results saved to: results/mcts-data/batch_results_20251208_081659.json
+[2025-12-08 08:16:59] Test completed successfully in 2729 seconds
+[2025-12-08 08:16:59] Running test: MCTS(100i,5r) vs Minimax (MCTS first) (config: game-environments/mcts-testing-environments/mcts-minimax-100-5.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: mcts (Black) vs minimax (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 20 (20.00%)
+White wins: 79 (79.00%)
+Draws: 1 (1.00%)
+
+Average moves per game: 29.98
+Average white score: 43.39
+Average black score: 20.58
+Average score difference (white - black): 22.81
+
+Total time: 11063.57 seconds
+Average time per game: 110.6357 seconds
+
+Memory usage:
+  Average per game: 4.88 MB
+  Peak (overall): 9.98 MB
+  Maximum per game: 9.17 MB
+  Minimum per game: 0.51 MB
+
+Move Computation Time:
+  Black (mcts):
+    Average: 3.5075 seconds
+    Max: 8.9914 seconds
+    Min: 0.0707 seconds
+  White (minimax):
+    Average: 0.1975 seconds
+    Max: 1.5487 seconds
+    Min: 0.0000 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=3.5465s, max=8.9914s, moves=2000
+    Mid_game: avg=1.6403s, max=4.7720s, moves=2000
+    Late_game: avg=0.3445s, max=1.6025s, moves=1997
+
+  Timing by Board Fill:
+    Early (discs): avg=3.7458s, max=8.9914s, moves=1600
+    Mid (discs): avg=1.8070s, max=5.5563s, moves=2500
+    Late (discs): avg=0.2904s, max=1.3956s, moves=1897
+
+Results saved to: results/mcts-data/batch_results_20251208_112122.json
+[2025-12-08 11:21:22] Test completed successfully in 11063 seconds
+[2025-12-08 11:21:22] Running test: Minimax vs MCTS(100i,5r) (Minimax first) (config: game-environments/mcts-testing-environments/minimax-mcts-100-5.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: minimax (Black) vs mcts (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 75 (75.00%)
+White wins: 25 (25.00%)
+Draws: 0 (0.00%)
+
+Average moves per game: 29.97
+Average white score: 21.24
+Average black score: 42.70
+Average score difference (white - black): -21.46
+
+Total time: 10395.97 seconds
+Average time per game: 103.9597 seconds
+
+Memory usage:
+  Average per game: 5.00 MB
+  Peak (overall): 10.00 MB
+  Maximum per game: 9.31 MB
+  Minimum per game: 0.96 MB
+
+Move Computation Time:
+  Black (minimax):
+    Average: 0.1823 seconds
+    Max: 1.0304 seconds
+    Min: 0.0000 seconds
+  White (mcts):
+    Average: 3.3470 seconds
+    Max: 8.7184 seconds
+    Min: 0.0701 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=3.3710s, max=8.7184s, moves=2000
+    Mid_game: avg=1.5167s, max=4.4386s, moves=2000
+    Late_game: avg=0.3102s, max=1.5338s, moves=1994
+
+  Timing by Board Fill:
+    Early (discs): avg=3.5690s, max=8.7184s, moves=1600
+    Mid (discs): avg=1.6352s, max=5.2462s, moves=2500
+    Late (discs): avg=0.3145s, max=1.4555s, moves=1894
+
+Results saved to: results/mcts-data/batch_results_20251208_141438.json
+[2025-12-08 14:14:39] Test completed successfully in 10397 seconds
+[2025-12-08 14:14:39] Running test: MCTS(100i,10r) vs Minimax (MCTS first) (config: game-environments/mcts-testing-environments/mcts-minimax-100-10.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: mcts (Black) vs minimax (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 28 (28.00%)
+White wins: 72 (72.00%)
+Draws: 0 (0.00%)
+
+Average moves per game: 29.98
+Average white score: 41.26
+Average black score: 22.70
+Average score difference (white - black): 18.56
+
+Total time: 21348.76 seconds
+Average time per game: 213.4876 seconds
+
+Memory usage:
+  Average per game: 4.79 MB
+  Peak (overall): 9.89 MB
+  Maximum per game: 9.21 MB
+  Minimum per game: 0.52 MB
+
+Move Computation Time:
+  Black (mcts):
+    Average: 6.9537 seconds
+    Max: 18.0386 seconds
+    Min: 0.1325 seconds
+  White (minimax):
+    Average: 0.1892 seconds
+    Max: 1.1692 seconds
+    Min: 0.0000 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=6.9267s, max=18.0386s, moves=2000
+    Mid_game: avg=3.0991s, max=9.3345s, moves=2000
+    Late_game: avg=0.6489s, max=3.2941s, moves=1996
+
+  Timing by Board Fill:
+    Early (discs): avg=7.3421s, max=18.0386s, moves=1600
+    Mid (discs): avg=3.4314s, max=10.9589s, moves=2500
+    Late (discs): avg=0.5384s, max=2.8360s, moves=1896
+
+Results saved to: results/mcts-data/batch_results_20251208_201027.json
+[2025-12-08 20:10:27] Test completed successfully in 21348 seconds
+[2025-12-08 20:10:27] Running test: Minimax vs MCTS(100i,10r) (Minimax first) (config: game-environments/mcts-testing-environments/minimax-mcts-100-10.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: minimax (Black) vs mcts (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 74 (74.00%)
+White wins: 24 (24.00%)
+Draws: 2 (2.00%)
+
+Average moves per game: 29.98
+Average white score: 21.12
+Average black score: 42.83
+Average score difference (white - black): -21.71
+
+Total time: 21050.28 seconds
+Average time per game: 210.5028 seconds
+
+Memory usage:
+  Average per game: 4.86 MB
+  Peak (overall): 9.72 MB
+  Maximum per game: 9.49 MB
+  Minimum per game: 0.55 MB
+
+Move Computation Time:
+  Black (minimax):
+    Average: 0.1867 seconds
+    Max: 1.3668 seconds
+    Min: 0.0000 seconds
+  White (mcts):
+    Average: 6.9745 seconds
+    Max: 21.7858 seconds
+    Min: 0.1326 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=6.9087s, max=21.7858s, moves=2000
+    Mid_game: avg=3.0124s, max=10.1087s, moves=2000
+    Late_game: avg=0.6044s, max=3.1674s, moves=1995
+
+  Timing by Board Fill:
+    Early (discs): avg=7.3410s, max=21.7858s, moves=1600
+    Mid (discs): avg=3.2540s, max=12.0532s, moves=2500
+    Late (discs): avg=0.6162s, max=3.1674s, moves=1895
+
+Results saved to: results/mcts-data/batch_results_20251209_020118.json
+[2025-12-09 02:01:18] Test completed successfully in 21051 seconds
+[2025-12-09 02:01:18] Running test: MCTS(1000i,1r) vs Minimax (MCTS first) (config: game-environments/mcts-testing-environments/mcts-minimax-1000-1.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: mcts (Black) vs minimax (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 30 (30.00%)
+White wins: 69 (69.00%)
+Draws: 1 (1.00%)
+
+Average moves per game: 30.00
+Average white score: 39.07
+Average black score: 24.92
+Average score difference (white - black): 14.15
+
+Total time: 22544.07 seconds
+Average time per game: 225.4407 seconds
+
+Memory usage:
+  Average per game: 6.66 MB
+  Peak (overall): 12.21 MB
+  Maximum per game: 11.72 MB
+  Minimum per game: 0.78 MB
+
+Move Computation Time:
+  Black (mcts):
+    Average: 7.3194 seconds
+    Max: 18.6161 seconds
+    Min: 0.2174 seconds
+  White (minimax):
+    Average: 0.1923 seconds
+    Max: 1.1506 seconds
+    Min: 0.0000 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=7.1911s, max=18.6161s, moves=2000
+    Mid_game: avg=3.3103s, max=10.1610s, moves=2000
+    Late_game: avg=0.7699s, max=3.6492s, moves=1999
+
+  Timing by Board Fill:
+    Early (discs): avg=7.6149s, max=18.6161s, moves=1600
+    Mid (discs): avg=3.6525s, max=12.2842s, moves=2500
+    Late (discs): avg=0.6461s, max=3.1362s, moves=1899
+
+Results saved to: results/mcts-data/batch_results_20251209_081702.json
+[2025-12-09 08:17:02] Test completed successfully in 22544 seconds
+[2025-12-09 08:17:02] Running test: Minimax vs MCTS(1000i,1r) (Minimax first) (config: game-environments/mcts-testing-environments/minimax-mcts-1000-1.json)
+pygame 2.6.1 (SDL 2.28.4, Python 3.12.3)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+Running 100 games: minimax (Black) vs mcts (White)
+============================================================
+
+============================================================
+BATCH SIMULATION RESULTS
+============================================================
+Total games: 100
+Black wins: 68 (68.00%)
+White wins: 31 (31.00%)
+Draws: 1 (1.00%)
+
+Average moves per game: 30.00
+Average white score: 23.69
+Average black score: 40.30
+Average score difference (white - black): -16.61
+
+Total time: 21451.35 seconds
+Average time per game: 214.5135 seconds
+
+Memory usage:
+  Average per game: 6.47 MB
+  Peak (overall): 12.13 MB
+  Maximum per game: 11.43 MB
+  Minimum per game: 0.79 MB
+
+Move Computation Time:
+  Black (minimax):
+    Average: 0.1825 seconds
+    Max: 0.9720 seconds
+    Min: 0.0000 seconds
+  White (mcts):
+    Average: 7.0776 seconds
+    Max: 18.9492 seconds
+    Min: 0.2142 seconds
+
+  Timing by Game Phase:
+    Early_game: avg=6.9303s, max=18.9492s, moves=2000
+    Mid_game: avg=3.1137s, max=10.1944s, moves=2000
+    Late_game: avg=0.6810s, max=3.2865s, moves=1999
+
+  Timing by Board Fill:
+    Early (discs): avg=7.3503s, max=18.9492s, moves=1600
+    Mid (discs): avg=3.3399s, max=11.6774s, moves=2500
+    Late (discs): avg=0.7051s, max=3.2865s, moves=1899
+
+Results saved to: results/mcts-data/batch_results_20251209_141434.json
+[2025-12-09 14:14:34] Test completed successfully in 21452 seconds
+[2025-12-09 14:14:34] Running test: MCTS(1000i,5r) vs Minimax (MCTS first) (config: game-environments/mcts-testing-environments/mcts-minimax-1000-5.json)

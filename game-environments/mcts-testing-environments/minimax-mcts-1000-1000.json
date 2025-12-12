@@ -1,0 +1,9 @@
+{
+  "agents": [
+    ["minimax", true, 3],
+    ["mcts", 1000, "random", 1000]
+  ],
+  "display": false,
+  "num_games": 100
+}
+
