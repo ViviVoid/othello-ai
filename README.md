@@ -179,6 +179,8 @@ python gif_generator.py -f game_replay.json -o game_animation.gif -d 300
 
 ### Shell Scripts
 
+I made these for running in linux. If you can't run these with WSL or want to run these in Windows, chatgpt them into powershell scripts.
+
 #### Running Heuristic Tests
 ```bash
 chmod +x run_heuristic_tests.sh
